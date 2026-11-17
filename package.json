@@ -1,0 +1,11 @@
+{
+  "name": "finance-moduly",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Modulární PWA na domácí finance. Data v Google tabulce uživatele.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test \"tests/*.test.js\"",
+    "start": "node tools/server.js"
+  }
+}

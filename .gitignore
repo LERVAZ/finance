@@ -1,0 +1,17 @@
+# Soukromá data nikdy do repozitáře
+MOJE_DATA.md
+podklady/
+*.pem
+*.key
+.env
+node_modules/
+tools/snimky/
+# testy se skutečnými čísly a poznámky s osobními rozhodnutími – jen lokálně
+tests/soukrome/
+docs/ROZHODNUTI.md
+# import ze staré tabulky autora – jen lokálně (načítá js/doplnky.js)
+js/import.js
+js/import-prevod.js
+js/import-porovnani.js
+tests/import.test.js
+tests/import-prevod.test.js
