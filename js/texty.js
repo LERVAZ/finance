@@ -39,6 +39,8 @@ export function precti(s) {
 }
 
 export const MESICE = ['leden', 'únor', 'březen', 'duben', 'květen', 'červen', 'červenec', 'srpen', 'září', 'říjen', 'listopad', 'prosinec'];
+/** 'yyyy-mm' → 'říjen 2026'. */
+export const mesicRok = (m) => (m ? MESICE[Number(m.slice(5, 7)) - 1] + ' ' + m.slice(0, 4) : '');
 export const MESICE_2P = ['ledna', 'února', 'března', 'dubna', 'května', 'června', 'července', 'srpna', 'září', 'října', 'listopadu', 'prosince'];
 
 /** '2026-11-17' → „17. 11. 2026“ */

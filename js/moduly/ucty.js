@@ -30,7 +30,10 @@ function polozky(ctx) {
     const detail = [['Stav k', u.k_datu ? datum(u.k_datu) : 'zatím nezadán']];
     if (u.minule !== null) detail.push(['Na konci minulého měsíce', kc(u.minule)]);
     if (u.zmena !== null) detail.push(['Změna tento měsíc', sk(u.zmena), trida(u.zmena)]);
-    if (u.typ === 'sporici') detail.push(['Výnos měsíčně (odhad)', kc(u.vynosMesicne)]);
+    if (u.typ === 'sporici') {
+      detail.push(['Úrok za měsíc po dani (odhad)', '+' + kc(u.vynosMesicne), 'pos']);
+      detail.push(['Odhad ke konci měsíce', kc(u.odhadKonecMesice)]);
+    }
     const tok = trvale.length ? tokUctu(u.id, trvale) : null;
     // tok z trvalých plateb má smysl u účtů, kam něco pravidelně přichází (u účtu výplaty je přehled v Útratách)
     if (tok && tok.prichazi.length && u.id !== ctx.cfg.ucet_vyplaty) {
@@ -39,7 +42,7 @@ function polozky(ctx) {
       detail.push(['Měsíčně zůstává', sk(tok.zustava), trida(tok.zustava)]);
     }
     const pod = (typNazev(u.typ) === u.nazev ? (u.typ === 'sporici' ? '' : 'běžný účet') : typNazev(u.typ)) +
-      (u.typ === 'sporici' && u.urok_pa ? ' · úrok ' + pct(u.urok_pa / 100, 1) + ' · cca ' + kc(u.vynosMesicne) + '/měs.' : '');
+      (u.typ === 'sporici' && u.urok_pa ? ' · úrok ' + pct(u.urok_pa / 100, 1) + ' · ke konci měsíce ' + kc(u.odhadKonecMesice) + ' (+' + kc(u.vynosMesicne) + ' úrok)' : '');
     return { id: u.id, banka: u.banka, poradi: 100 + (Number(u.poradi) || 0), nazev: u.nazev, hodnota: u.zustatek || 0, hodnotaText: kc(u.zustatek), pod, detail,
       tlacitka: [{ text: 'Upravit účet', akce: 'editor.otevrit', data: { tab: 'ucty', id: u.id } }, { text: 'Zapsat zůstatek', akce: 'prejdi', data: { tab: 'zapis', sub: 'stavy' } }] };
   });
@@ -62,7 +65,8 @@ function karty(ctx) {
   if (sporici.length) out.push({ id: 'sporici', nazev: 'Spořicí účty', barva: 'blue', poradi: 30,
     souhrn: { hodnota: kc(suma(sporici)), pod: sporici.length + (sporici.length === 1 ? ' účet' : sporici.length < 5 ? ' účty' : ' účtů') },
     html: karta('blue', 'Spořicí účty', sporici.map((u) =>
-    radek(u.nazev, u.banka + (u.urok_pa ? ' · úrok ' + pct(u.urok_pa / 100, 1) + ' · cca ' + kc(u.vynosMesicne) + '/měs.' : ''), kc(u.zustatek))), html`<span class="num">${kc(suma(sporici))}</span>`) });
+    radek(u.nazev, u.banka + (u.urok_pa ? ' · úrok ' + pct(u.urok_pa / 100, 1) : '') + (u.urok_pa && u.zustatek ? ' · ke konci měsíce ' + kc(u.odhadKonecMesice) : ''), kc(u.zustatek),
+      u.urok_pa && u.zustatek ? '+' + kc(u.vynosMesicne) + ' úrok' : '', 'pos')), html`<span class="num">${kc(suma(sporici))}</span>`) });
   if (bezne.length) out.push({ id: 'bezne', nazev: 'Běžné účty', barva: 'teal', poradi: 35,
     souhrn: { hodnota: kc(suma(bezne)), pod: bezne.length + (bezne.length === 1 ? ' účet' : bezne.length < 5 ? ' účty' : ' účtů') },
     html: karta('teal', 'Běžné účty', bezne.map((u) =>

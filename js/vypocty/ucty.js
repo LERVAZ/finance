@@ -12,7 +12,10 @@ export function zustatekK(stavy, id, kDatu) {
   return s.length ? { zustatek: Number(s[s.length - 1].zustatek), datum: s[s.length - 1].datum } : null;
 }
 
-/** Aktuální zůstatek a změna proti poslednímu stavu před začátkem tohoto měsíce. */
+/** Srážková daň z úroků (15 %). */
+export const SRAZKOVA_DAN = 0.15;
+
+/** Aktuální zůstatek a změna proti poslednímu stavu před začátkem tohoto měsíce. Úrok spořicího účtu je už po dani. */
 export function prehledUctu(ucet, stavy, dnes) {
   const ted = zustatekK(stavy, ucet.id);
   const zacatekMesice = dnes.slice(0, 8) + '01';
@@ -23,7 +26,9 @@ export function prehledUctu(ucet, stavy, dnes) {
   return {
     ...ucet, zustatek, k_datu: ted ? ted.datum : null, minule,
     zmena: zustatek !== null && minule !== null ? zustatek - minule : null,
-    vynosMesicne: ucet.typ === 'sporici' && zustatek ? zustatek * (urok / 100) / 12 : null
+    vynosMesicne: ucet.typ === 'sporici' && zustatek ? zustatek * (urok / 100) / 12 * (1 - SRAZKOVA_DAN) : null,
+    // odhad ke konci měsíce: platí, když peníze zůstanou na účtu celý měsíc (banka počítá z denních zůstatků)
+    odhadKonecMesice: ucet.typ === 'sporici' && zustatek ? zustatek + zustatek * (urok / 100) / 12 * (1 - SRAZKOVA_DAN) : null
   };
 }
 

@@ -122,7 +122,8 @@ test('účty: zůstatky z historie, změna za měsíc, výnos, banky, toky', () 
   assert.equal(p.zustatek, 71000);
   assert.equal(p.minule, 65000);
   assert.equal(p.zmena, 6000);
-  assert.equal(Math.round(p.vynosMesicne), 213);
+  assert.equal(Math.round(p.vynosMesicne), 181); // 71 000 × 3,6 % / 12 × 0,85 (srážková daň)
+  assert.equal(Math.round(p.odhadKonecMesice), 71181);
   const prazdny = prehledUctu({ id: 'x', typ: 'bezny' }, stavy, '2026-11-17');
   assert.equal(prazdny.zustatek, null);
   const banky = podleBanky([{ id: '1', banka: 'B', zustatek: 5, poradi: 2 }, { id: '2', banka: 'A', zustatek: 10, poradi: 1 }, { id: '3', banka: 'B', zustatek: 1, poradi: 3 }]);

@@ -41,6 +41,7 @@ export function vykonLetos(rv, rok) {
 export function souhrnInvestice(inv, historie, dnes) {
   const r = mesicniVykonnost(rada(historie, inv.id));
   const posl = r[r.length - 1] || null;
+  const pred = r[r.length - 2] || null;
   const hodnota = posl ? posl.hodnota : null;
   const vlozeno = posl ? posl.vlozeno : null;
   const zisk = hodnota !== null && vlozeno !== null ? hodnota - vlozeno : null;
@@ -48,6 +49,9 @@ export function souhrnInvestice(inv, historie, dnes) {
     ...inv, rada: r, hodnota, vlozeno, k_datu: posl ? posl.datum : null, zisk,
     ziskPct: zisk !== null && vlozeno ? zisk / vlozeno : null,
     mesic: posl ? posl.vykon : null,
+    // stav ke konci měsíce: změna v Kč proti konci předchozího zapsaného měsíce (včetně vkladu; % je očištěné o vklad)
+    mesicStavu: posl ? posl.mesic : null,
+    zmenaMesic: posl && pred ? posl.hodnota - pred.hodnota : null,
     letos: vykonLetos(r, dnes.slice(0, 4))
   };
 }

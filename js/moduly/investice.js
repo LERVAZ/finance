@@ -1,6 +1,6 @@
 /* Modul Investice a fondy: vloženo, hodnota, zisk Kč i %, výkonnost očištěná o vklady. */
 import { html, karta, trida, raw } from '../html.js';
-import { kc, sk, pct, cislo, datum } from '../texty.js';
+import { kc, sk, pct, cislo, datum, mesicRok } from '../texty.js';
 import { souhrnInvestice, portfolio } from '../vypocty/investice.js';
 import { cary, sloupce, cv, PALETA } from '../grafy.js';
 import { popisMesice } from '../zalozky.js';
@@ -31,7 +31,8 @@ function polozky(ctx) {
   return souhrny(ctx).map((s) => ({
     id: s.id, banka: s.instituce, poradi: 300, nazev: s.nazev, hodnota: s.hodnota || 0, hodnotaText: kc(s.hodnota),
     pod: 'vloženo ' + kc(s.vlozeno) + (s.ziskPct !== null ? ' · ' + pct(s.ziskPct, 1, true) : ''), podTrida: trida(s.zisk),
-    detail: [['Zisk celkem', sk(s.zisk), trida(s.zisk)], ['Poslední měsíc', pct(s.mesic, 2, true), trida(s.mesic)], ['Letos', pct(s.letos, 1, true), trida(s.letos)],
+    detail: [['Zisk celkem', sk(s.zisk) + (s.ziskPct !== null ? ' · ' + pct(s.ziskPct, 1, true) : ''), trida(s.zisk)],
+      ['Změna za ' + (mesicRok(s.mesicStavu) || 'měsíc'), sk(s.zmenaMesic), trida(s.zmenaMesic)], ['Výkon za měsíc (bez vkladů)', pct(s.mesic, 2, true), trida(s.mesic)], ['Letos', pct(s.letos, 1, true), trida(s.letos)],
       ['Měsíční vklad', kc(s.mesicni_vklad)], ['Stav k', s.k_datu ? datum(s.k_datu) : '–']],
     tlacitka: [{ text: 'Upravit', akce: 'editor.otevrit', data: { tab: 'investice', id: s.id } }, { text: 'Zapsat hodnotu', akce: 'prejdi', data: { tab: 'zapis', sub: 'stavy' } }]
   }));
@@ -54,17 +55,21 @@ function vyhled(ctx) {
   if (!S.length) return [];
   const p = pf(ctx);
   const posl = p[p.length - 1];
-  const radky = S.map((s) => ({ nazev: s.nazev, vlozeno: s.vlozeno, hodnota: s.hodnota, zisk: s.zisk, ziskPct: s.ziskPct, letos: s.letos }));
+  const radky = S.map((s) => ({ nazev: s.nazev, vlozeno: s.vlozeno, hodnota: s.hodnota, zisk: s.zisk, ziskPct: s.ziskPct, letos: s.letos, zmenaMesic: s.zmenaMesic, mesic: s.mesic }));
+  const mesicStavu = S.map((s) => s.mesicStavu).filter(Boolean).sort().pop();
   if (S.length > 1 && posl) {
     const z = posl.hodnota - posl.vlozeno;
     const letos = p.filter((b) => b.mesic.slice(0, 4) === ctx.dnes.slice(0, 4) && b.vykon !== null).reduce((t, b) => t * (1 + b.vykon), 1) - 1;
-    radky.push({ nazev: 'Celkem', vlozeno: posl.vlozeno, hodnota: posl.hodnota, zisk: z, ziskPct: posl.vlozeno ? z / posl.vlozeno : null, letos, celkem: true });
+    const pred = p[p.length - 2];
+    radky.push({ nazev: 'Celkem', vlozeno: posl.vlozeno, hodnota: posl.hodnota, zisk: z, ziskPct: posl.vlozeno ? z / posl.vlozeno : null, letos, celkem: true,
+      zmenaMesic: pred ? posl.hodnota - pred.hodnota : null, mesic: posl.vykon });
   }
   const chip = (n, d) => (n === null || n === undefined ? html`<span class="muted">–</span>` : html`<span class="chip ${trida(n)}">${pct(n, d, true)}</span>`);
-  return [{ poradi: 30, html: html`<section class="card c-blue"><h2>Investice</h2><div class="scroll"><table><thead><tr><th></th><th class="r">Vloženo</th><th class="r">Hodnota</th><th class="r">Zisk</th><th class="r">%</th><th class="r">Letos</th></tr></thead><tbody>
-    ${radky.map((r) => html`<tr class="${r.celkem ? 'total' : ''}"><td>${r.nazev}</td><td class="r num">${kc(r.vlozeno)}</td><td class="r num">${kc(r.hodnota)}</td>
-      <td class="r num ${trida(r.zisk)}">${sk(r.zisk)}</td><td class="r">${chip(r.ziskPct, 1)}</td><td class="r">${chip(r.letos, 1)}</td></tr>`)}</tbody></table></div>
-    <div class="note">Výkonnost je očištěná o vklady: vklad v měsíci se nepočítá jako zisk.</div></section>` }];
+  return [{ poradi: 30, html: html`<section class="card c-blue"><h2>Investice <span class="muted small">· stav ke konci měsíce${mesicStavu ? ' · ' + mesicRok(mesicStavu) : ''}</span></h2><div class="scroll"><table><thead><tr><th></th><th class="r">Hodnota / vloženo</th><th class="r">Zisk</th><th class="r">Za měsíc</th><th class="r">Letos</th></tr></thead><tbody>
+    ${radky.map((r) => html`<tr class="${r.celkem ? 'total' : ''}"><td>${r.nazev}</td><td class="r"><div class="num">${kc(r.hodnota)}</div><div class="num small muted">${kc(r.vlozeno)}</div></td>
+      <td class="r"><div class="num ${trida(r.zisk)}">${sk(r.zisk)}</div>${chip(r.ziskPct, 1)}</td>
+      <td class="r"><div class="num ${trida(r.zmenaMesic)}">${sk(r.zmenaMesic)}</div>${chip(r.mesic, 2)}</td><td class="r">${chip(r.letos, 1)}</td></tr>`)}</tbody></table></div>
+    <div class="note">„Za měsíc“ je změna hodnoty v Kč proti konci předchozího měsíce (včetně vkladu). Procenta jsou očištěná o vklady: vklad v měsíci se nepočítá jako zisk.</div></section>` }];
 }
 
 function grafy(ctx) {

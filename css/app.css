@@ -206,3 +206,14 @@ textarea.struktura { width: 100%; font: 12px/1.4 'IBM Plex Mono', monospace; bac
 
 /* přihlášení */
 .ucet-lista { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin: 0 0 12px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
+
+/* Výplata: dvě velká čísla vedle sebe (minulé období | zbývá teď) */
+.dve-cisla { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 8px 0 12px; container-type: inline-size; }
+.dve-cisla .dc { background: var(--card2); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.dve-cisla .dc.hl { border-color: color-mix(in srgb, var(--c, var(--green)) 55%, var(--line)); }
+.dve-cisla .l { font-size: 13px; color: var(--muted); }
+.dve-cisla .v { font-size: 26px; font-weight: 500; line-height: 1.2; }
+.dve-cisla .p { font-size: 13px; color: var(--muted); }
+.dve-cisla .p b { font-weight: 500; }
+@container (max-width: 460px) { .dve-cisla .dc { padding: 10px; } .dve-cisla .v { font-size: 19px; } .dve-cisla .p, .dve-cisla .l { font-size: 12px; } }
+@container (max-width: 260px) { .dve-cisla .v { font-size: 16px; } }

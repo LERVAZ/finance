@@ -1,5 +1,11 @@
 # Co je nového
 
+## 1.1.0 – 18. 11. 2026
+- Období v Útratách začíná dnem, kdy výplata skutečně přišla (ne pevným dnem).
+- Na Přehledu (karta Výplata) a v Útratách dvě velká čísla: výsledek minulého období a kolik zbývá z výplaty teď.
+- Spořicí účty: úrok po 15% dani a odhad stavu ke konci měsíce.
+- Investice a pojištění: stav ke konci měsíce a změna za měsíc v Kč.
+
 ## 1.0.3 – 18. 11. 2026
 - Po přihlášení se otevře Přehled.
 - Odhlášení už u Googlu neruší povolení, takže další přihlášení stačí jednou.

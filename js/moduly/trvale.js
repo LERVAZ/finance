@@ -54,7 +54,7 @@ function zapis(ctx) {
 
 function karty(ctx) {
   // nejbližší platby: měsíc dopředu, rozdělené podle účtů (převod je u obou účtů)
-  const polozky = nejblizsiPlatby({ dnes: ctx.dnes, vyplataDen: ctx.vyplataDen(), trvale: ctx.data('trvale_platby'),
+  const polozky = nejblizsiPlatby({ dnes: ctx.dnes, vyplataDen: ctx.kalendar(), trvale: ctx.data('trvale_platby'),
     dluhopisy: ctx.zapnuto('dluhopis') ? ctx.data('dluhopisy') : [], dluhopisVynosy: ctx.data('dluhopis_vynosy'),
     vyplata: { castka: ctx.cfg.vyplata_castka, ucet_id: ctx.cfg.ucet_vyplaty || '' } });
   if (!polozky.length) return [];

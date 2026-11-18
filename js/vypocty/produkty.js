@@ -109,7 +109,7 @@ export function souhrnZdroju(zaznamy, druhy, rocniPlatby, dnes) {
 }
 
 /* ---------- životní pojištění ---------- */
-export function souhrnPojisteni(p, dnes) {
+export function souhrnPojisteni(p, dnes, historie = []) {
   const mesicu = p.od ? Math.max(0, mesicuMezi(p.od.slice(0, 7), dnes.slice(0, 7)) + 1) : null;
   const zaplaceno = mesicu !== null ? mesicu * (Number(p.mesicni_platba) || 0) : null;
   // investovaná část: známý základ k datu + měsíční investiční část od té doby, jinak měsíce od začátku × investiční část
@@ -118,7 +118,14 @@ export function souhrnPojisteni(p, dnes) {
     : mesicu !== null ? mesicu * (Number(p.investicni_cast) || 0) : null;
   const hodnota = p.odkupne === null || p.odkupne === undefined ? null : Number(p.odkupne);
   const zisk = hodnota !== null && investovano ? hodnota - investovano : null;
-  return { ...p, mesicu, zaplaceno, investovano, hodnota, zisk, ziskPct: zisk !== null && investovano ? zisk / investovano : null };
+  // stav ke konci měsíce: poslední zápis v každém měsíci, změna mezi posledními dvěma měsíci
+  const poMesicich = new Map();
+  historie.filter((h) => h.polozka === 'pojisteni:' + p.id && h.datum && h.hodnota !== null && h.hodnota !== undefined && h.hodnota !== '')
+    .sort((a, b) => (a.datum < b.datum ? -1 : a.datum > b.datum ? 1 : 0)).forEach((h) => poMesicich.set(h.datum.slice(0, 7), Number(h.hodnota)));
+  const body = [...poMesicich.entries()];
+  const posl = body[body.length - 1], pred = body[body.length - 2];
+  return { ...p, mesicu, zaplaceno, investovano, hodnota, zisk, ziskPct: zisk !== null && investovano ? zisk / investovano : null,
+    mesicStavu: posl ? posl[0] : (p.k_datu ? String(p.k_datu).slice(0, 7) : null), zmenaMesic: posl && pred ? posl[1] - pred[1] : null };
 }
 
 /* ---------- daně ---------- */

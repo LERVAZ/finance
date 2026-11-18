@@ -1,8 +1,10 @@
 {
-  "verze": "1.0.3",
+  "verze": "1.1.0",
   "datum": "2026-11-18",
   "novinky": [
-    "Po přihlášení se otevře Přehled.",
-    "Odhlášení už u Googlu neruší povolení, takže další přihlášení stačí jednou."
+    "Období v Útratách začíná dnem, kdy výplata skutečně přišla (ne pevným dnem).",
+    "Na Přehledu (karta Výplata) a v Útratách dvě velká čísla: výsledek minulého období a kolik zbývá z výplaty teď.",
+    "Spořicí účty: úrok po 15% dani a odhad stavu ke konci měsíce.",
+    "Investice a pojištění: stav ke konci měsíce a změna za měsíc v Kč."
   ]
 }

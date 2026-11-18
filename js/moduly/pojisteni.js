@@ -1,10 +1,10 @@
 /* Modul Životní pojištění s investiční složkou. */
 import { trida } from '../html.js';
-import { kc, sk, pct, datum } from '../texty.js';
+import { kc, sk, pct, datum, mesicRok } from '../texty.js';
 import { souhrnPojisteni } from '../vypocty/produkty.js';
 import { opsHodnoty } from '../zalozky.js';
 
-export const souhrny = (ctx) => ctx.pamet.poj || (ctx.pamet.poj = ctx.data('pojisteni').filter((p) => p.aktivni !== false && p.id).map((p) => souhrnPojisteni(p, ctx.dnes)));
+export const souhrny = (ctx) => ctx.pamet.poj || (ctx.pamet.poj = ctx.data('pojisteni').filter((p) => p.aktivni !== false && p.id).map((p) => souhrnPojisteni(p, ctx.dnes, ctx.data('historie'))));
 
 const editor = {
   nadpisNovy: 'Nové pojištění', nadpis: 'Upravit pojištění', barva: 'teal', mazani: 'skryt', historie: 'odkupne',
@@ -33,7 +33,8 @@ export default {
   polozky: (ctx) => souhrny(ctx).map((p) => ({ id: p.id, banka: p.pojistovna, poradi: 500, nazev: p.nazev, hodnota: p.hodnota || 0, hodnotaText: kc(p.hodnota),
     pod: 'odkupné' + (p.ziskPct !== null ? ' · ' + pct(p.ziskPct, 1, true) : ''), podTrida: trida(p.zisk),
     detail: [['Platím měsíčně', kc(p.mesicni_platba)], ['Z toho investiční část', kc(p.investicni_cast)], ['Investováno celkem (odhad)', kc(p.investovano)],
-      ...(p.vlozeno_zaklad ? [] : [['Zaplaceno celkem (odhad)', kc(p.zaplaceno)]]), ['Zisk proti investované části', sk(p.zisk), trida(p.zisk)], ['Odkupné ke dni', p.k_datu ? datum(p.k_datu) : '–']],
+      ...(p.vlozeno_zaklad ? [] : [['Zaplaceno celkem (odhad)', kc(p.zaplaceno)]]), ['Zisk proti investované části', sk(p.zisk), trida(p.zisk)],
+      ...(p.zmenaMesic !== null ? [['Změna odkupného za ' + mesicRok(p.mesicStavu), sk(p.zmenaMesic), trida(p.zmenaMesic)]] : []), ['Odkupné ke dni', p.k_datu ? datum(p.k_datu) : '–']],
     tlacitka: [{ text: 'Upravit', akce: 'editor.otevrit', data: { tab: 'pojisteni', id: p.id } }] })),
   stavy: (ctx) => souhrny(ctx).map((p) => ({ klic: 'p_' + p.id, skupina: 'Pojištění', label: p.nazev + ' – odkupné', hodnota: p.hodnota, k_datu: p.k_datu,
     uloz: (v, _b, d) => opsHodnoty('pojisteni', p.id, 'odkupne', v, d) })),

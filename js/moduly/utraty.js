@@ -6,6 +6,36 @@ import { zmenaSporiciho, jeVydaj } from '../vypocty/utraty.js';
 import { zustatekK } from '../vypocty/ucty.js';
 import { sloupce, cv } from '../grafy.js';
 import { vykresliDlazdice } from '../rozlozeni.js';
+import { pridejMesice } from '../vypocty/datumy.js';
+
+const predchoziKlic = (klic) => pridejMesice(klic + '-01', -1).slice(0, 7);
+
+/** Popisek hlavního čísla podle stavu období. */
+function popisZbyva(C) {
+  if (C.aktualni) return 'Zbývá z výplaty teď';
+  if (C.uzavrene) return C.zbyva >= 0 ? 'Zbylo z výplaty' : 'Utraceno navíc';
+  return 'Zbude z výplaty (plán)';
+}
+const zaObdobi = (C) => (C.aktualni ? 'od výplaty' : 'za období');
+
+/**
+ * Dvě velká čísla vedle sebe: výsledek předchozího období a zbývá z výplaty ve vybraném období.
+ * P = předchozí období, C = vybrané (na Přehledu aktuální).
+ */
+function dveCisla(ctx, P, C, nadpisMinule = 'Minulé období') {
+  const minule = P.zbyva >= 0 ? 'zbylo' : 'utraceno navíc';
+  return html`<div class="dve-cisla">
+    <div class="dc"><span class="l">${nadpisMinule} · ${minule}</span>
+      <span class="v num ${trida(P.zbyva)}">${sk(P.zbyva)}</span>
+      <span class="p">${P.hranice.popisek}${P.odhad ? ' · výplata odhadem' : ''}</span>
+      <span class="p">na spořicí přibylo za období <b class="num ${trida(P.naSporiciZObdobi)}">${sk(P.naSporiciZObdobi)}</b></span></div>
+    <div class="dc hl"><span class="l">${popisZbyva(C)}</span>
+      <span class="v num ${trida(C.zbyva)}">${sk(C.zbyva)}${C.odhad ? html` <span class="small muted">odhad</span>` : ''}</span>
+      <span class="p">${C.hranice.popisek}</span>
+      ${ctx.zapnuto('trvale') && C.trvCeka > 0 ? html`<span class="p">po všech trvalých platbách <b class="num ${trida(C.zbyvaPoVsech)}">${sk(C.zbyvaPoVsech)}</b> <span class="muted">(čeká −${kc(C.trvCeka)})</span></span>` : ''}
+      <span class="p">na spořicí přibylo ${zaObdobi(C)} <b class="num ${trida(C.naSporiciZObdobi)}">${sk(C.naSporiciZObdobi)}</b></span></div>
+  </div>`;
+}
 
 const BARVY = ['var(--c-blue)', 'var(--c-teal)', 'var(--c-green)', 'var(--c-purple)', 'var(--c-amber)', 'var(--c-red)', '#E879A6', '#8FA3B8'];
 const znak = (typ) => (TYPY_POHYBU.find((t) => t.id === typ) || { znak: '−' }).znak;
@@ -32,19 +62,19 @@ function zalozka(ctx) {
     })}</select>
     <button type="button" class="slim" data-akce="prejdi" data-tab="zapis" data-sub="platba">+ Zapsat platbu</button>`;
   const dl = [];
+  const P = ctx.obdobi(predchoziKlic(klic));
   dl.push({ id: 'souhrn', nazev: 'Měsíční přehled', barva: 'teal', poradi: 10,
-    souhrn: { hodnota: sk(C.zbyva), trida: trida(C.zbyva), pod: 'zbývá · ' + C.hranice.popisek },
+    souhrn: { hodnota: sk(C.zbyva), trida: trida(C.zbyva), pod: popisZbyva(C).toLowerCase() + ' · ' + C.hranice.popisek },
     html: karta('teal', 'Měsíční přehled', html`<div class="muted small">Od výplaty do výplaty · ${C.hranice.popisek}</div>
+    ${dveCisla(ctx, P, C, 'Předchozí období')}
     <div class="mtiles">
       ${dlazdice('Výplata / příjmy', raw(kc(C.prijmy) + (C.odhad ? ' <span class="small muted">odhad</span>' : '')), 'var(--green)')}
-      ${ctx.zapnuto('trvale') ? dlazdice('Trvalé platby z výplaty', '−' + kc(C.trvSoucet)) : ''}
+      ${ctx.zapnuto('trvale') ? dlazdice(C.trvCeka ? 'Trvalé odešly (z ' + kc(C.trvSoucet) + ')' : 'Trvalé platby odešly', '−' + kc(C.trvOdeslo)) : ''}
       ${dlazdice('Ostatní výdaje', '−' + kc(C.vydaje), C.vydaje ? 'var(--red)' : '')}
       ${sporici ? dlazdice(sporici.nazev + ' teď', kc(sporici.zustatek), 'var(--c-blue)') : ''}
-      ${dlazdice('Zbývá', sk(C.zbyva), C.zbyva >= 0 ? 'var(--green)' : 'var(--red)')}
     </div>
-    <div class="small muted">Zbývá ${sk(C.zbyva)} = na spořicím z tohoto období <b class="num ${trida(C.naSporiciZObdobi)}">${sk(C.naSporiciZObdobi)}</b>
-      + na běžném účtu <b class="num ${trida(C.naBeznem)}">${sk(C.naBeznem)}</b>${C.odhad ? ' (výplata je zatím jen odhad)' : ''}.
-      Na spořicí převedeno ${kc(C.naSporici)}, zpět ze spořicího ${kc(C.zeSporiciho)}.
+    <div class="small muted">Na spořicí převedeno ${kc(C.naSporici)}, zpět ze spořicího ${kc(C.zeSporiciho)} (převody se jako útrata nepočítají).
+      ${C.uzavrene && Math.round(C.naBeznem) ? html` Rozdíl proti „zbylo“ ${sk(C.naBeznem)} zůstal na běžném účtu, nebo chybí zapsaný převod.` : ''}
       ${C.odhad ? html` · <button type="button" class="linkbtn" data-akce="utraty.zapsatVyplatu">zapsat skutečnou výplatu</button>` : ''}</div>`) });
   if (ctx.zapnuto('trvale')) {
     const odeslo = C.trvale.filter((x) => x.odeslo).length;
@@ -87,10 +117,10 @@ function zapisPlatby(ctx) {
 
 function karty(ctx) {
   const C = ctx.obdobi(ctx.aktualniKlic);
-  return [{ id: 'mesic', nazev: 'Tento měsíc', barva: 'green', poradi: 20,
-    souhrn: { hodnota: sk(C.zbyva), trida: trida(C.zbyva), pod: 'zbývá do ' + datumKratce(C.hranice.konec) },
-    html: karta('green', 'Tento měsíc', html`<div class="big num ${trida(C.zbyva)}">${sk(C.zbyva)}</div>
-    <div class="muted small">zbývá · ${C.hranice.popisek}${C.odhad ? ' · výplata odhadem' : ''}</div>
+  const P = ctx.obdobi(predchoziKlic(ctx.aktualniKlic));
+  return [{ id: 'mesic', nazev: 'Výplata', barva: 'green', poradi: 20,
+    souhrn: { hodnota: sk(C.zbyva), trida: trida(C.zbyva), pod: 'zbývá z výplaty · do ' + datumKratce(C.hranice.konec) },
+    html: karta('green', 'Výplata', html`${dveCisla(ctx, P, C)}
     <div class="split"><span>útraty <b class="num ${C.vydaje ? 'neg' : ''}">${C.vydaje ? '−' : ''}${kc(C.vydaje)}</b></span>
       ${ctx.zapnuto('trvale') ? html`<span>trvalé <b class="num">−${kc(C.trvSoucet)}</b></span>` : ''}</div>
     <button type="button" class="btn2 slim" data-akce="prejdi" data-tab="utraty">Útraty za měsíc →</button>`) }];
@@ -124,7 +154,7 @@ const akce = {
     await ctx.store.pridej('pohyby', z);
     const sp = await upravSporici(ctx, zmenaSporiciho(z.typ, z.castka), z.datum, (z.popis || z.typ));
     ctx.ui.predvyplnit = null;
-    ctx.ui.obdobi = klicObdobi(z.datum, ctx.vyplataDen());
+    ctx.ui.obdobi = klicObdobi(z.datum, ctx.kalendar());
     ctx.zprava('Přidáno: ' + (z.popis || z.typ) + ' ' + kc(z.castka) + '.' + sp);
   },
   'utraty.smazat': async (ctx, el) => {
