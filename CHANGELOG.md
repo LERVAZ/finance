@@ -1,5 +1,9 @@
 # Co je nového
 
+## 1.0.3 – 18. 11. 2026
+- Po přihlášení se otevře Přehled.
+- Odhlášení už u Googlu neruší povolení, takže další přihlášení stačí jednou.
+
 ## 1.0.2 – 18. 11. 2026
 - Tlačítko Přihlásit přes Google přihlašuje rovnou přes stránku Googlu (bez vyskakovacího okna).
 - Tlačítko Odhlásit nahoře vedle ozubeného kolečka.

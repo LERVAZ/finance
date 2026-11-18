@@ -306,7 +306,7 @@ AKCE['app.prihlasitZnovu'] = async () => {
 
 window.addEventListener('DOMContentLoaded', async () => {
   const navrat = auth.zpracujNavrat();
-  if (navrat === true) app.ui.tab = LS.get('tab') || 'prehled';
+  if (navrat === true) { app.ui.tab = 'prehled'; LS.set('tab', 'prehled'); }
   else if (typeof navrat === 'string') { app.ui.tab = LS.get('tab') || 'prehled'; setTimeout(() => zprava(navrat, true), 300); }
   app.zamekPodporovan = await auth.zamekPodporovan();
   await nactiDoplnky();

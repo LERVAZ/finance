@@ -1,9 +1,8 @@
 {
-  "verze": "1.0.2",
+  "verze": "1.0.3",
   "datum": "2026-11-18",
   "novinky": [
-    "Tlačítko Přihlásit přes Google přihlašuje rovnou přes stránku Googlu (bez vyskakovacího okna).",
-    "Tlačítko Odhlásit nahoře vedle ozubeného kolečka.",
-    "Z úvodní stránky zmizelo vyzkoušení s ukázkovými daty."
+    "Po přihlášení se otevře Přehled.",
+    "Odhlášení už u Googlu neruší povolení, takže další přihlášení stačí jednou."
   ]
 }

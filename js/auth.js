@@ -49,7 +49,7 @@ export function zpracujNavrat() {
   if (h.has('error')) return h.get('error') === 'access_denied' ? 'Přihlášení bylo zrušeno.' : 'Přihlášení se nepovedlo: ' + h.get('error');
   if (!(h.get('scope') || '').split(' ').includes(SCOPE)) {
     LS.set('force-consent', '1');
-    return 'Google nepovolil přístup k souborům aplikace. Přihlas se znovu a oprávnění na stránce Googlu potvrď.';
+    return 'Google nepovolil přístup k souborům aplikace. Přihlas se znovu a na stránce Googlu zaškrtni políčko u Disku Google.';
   }
   LS.del('force-consent');
   ulozToken(h.get('access_token'), Number(h.get('expires_in')) || 3600);
@@ -66,10 +66,11 @@ function ulozToken(t, expiresIn) {
 /** Přihlášení: stránka se přepne na Google a vrátí se s tokenem (funguje i při blokovaných cookies třetích stran). */
 export function prihlasit() { prihlasitPresmerovanim(); return new Promise(() => {}); }
 
+/* Odhlášení jen zapomene token na tomto zařízení. Povolení u Googlu se nezruší – jinak by se Google
+   při dalším přihlášení znovu ptal na přístup k Disku a políčko bývá nezaškrtnuté. Zrušit ho jde
+   na myaccount.google.com/permissions. Token sám vyprší do hodiny. */
 export function odhlasit() {
-  const t = LS.get('token');
   LS.del('token'); LS.del('token-exp');
-  if (t) fetch('https://oauth2.googleapis.com/revoke', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'token=' + encodeURIComponent(t) }).catch(() => {});
 }
 
 /* ---------- zámek ---------- */
