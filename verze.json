@@ -1,7 +1,9 @@
 {
-  "verze": "1.0.0",
-  "datum": "2026-11-17",
+  "verze": "1.0.1",
+  "datum": "2026-11-18",
   "novinky": [
-    "První verze pro testování: moduly, průvodce, import ze staré tabulky, rozložení dlaždic, barvy bank, zálohy tabulky."
+    "Přihlášení přesměrováním pro prohlížeče, kde přihlašovací okno Googlu nefunguje (tlačítko „Přihlásit jinak“).",
+    "Tlačítko Odhlásit nahoře v Nastavení a v průvodci.",
+    "Ve zveřejněné verzi není import ze staré tabulky."
   ]
 }

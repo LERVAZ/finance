@@ -195,7 +195,8 @@ function ukazOverlay(obsah) { const o = $('overlay'); o.innerHTML = '<div class=
 function skryjOverlay() { const o = $('overlay'); o.hidden = true; o.innerHTML = ''; }
 function ukazPrihlaseni(msg) {
   ukazOverlay(ikona('zamek', 56).s + '<h1>Finance</h1><p class="muted">' + esc(msg || 'Přihlášení vypršelo.') + '</p>' +
-    '<button type="button" class="wide" data-akce="app.prihlasitZnovu">Přihlásit přes Google</button>');
+    '<button type="button" class="wide" data-akce="app.prihlasitZnovu">Přihlásit přes Google</button>' +
+    '<button type="button" class="linkbtn prihlasit-jinak" data-akce="app.prihlasitJinak">Nejde přihlášení? Přihlásit jinak</button>');
 }
 function ukazZamek() {
   ukazOverlay(ikona('zamek', 56).s + '<h1>Finance</h1><p class="muted">Pro otevření se ověř otiskem, obličejem nebo PINem zařízení.</p>' +
@@ -298,6 +299,7 @@ AKCE['app.kontrolaVerze'] = async () => {
   zprava(!j ? 'Nepodařilo se zjistit, jestli je nová verze (jsi online?).' : app.novaVerze ? 'Je k dispozici verze ' + j.verze + '.' : 'Máš nejnovější verzi ' + VERZE + '.');
 };
 AKCE['app.znovu'] = async () => { await start(); return false; };
+AKCE['app.prihlasitJinak'] = () => { auth.prihlasitPresmerovanim(); return false; };
 AKCE['app.prihlasitZnovu'] = async () => {
   await auth.prihlasit();
   skryjOverlay();
@@ -305,6 +307,9 @@ AKCE['app.prihlasitZnovu'] = async () => {
 };
 
 window.addEventListener('DOMContentLoaded', async () => {
+  const navrat = auth.zpracujNavrat();
+  if (navrat === true) app.ui.tab = LS.get('tab') || 'prehled';
+  else if (typeof navrat === 'string') { app.ui.tab = LS.get('tab') || 'prehled'; setTimeout(() => zprava(navrat, true), 300); }
   app.zamekPodporovan = await auth.zamekPodporovan();
   await nactiDoplnky();
   start();

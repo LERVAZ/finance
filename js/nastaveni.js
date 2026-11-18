@@ -17,6 +17,7 @@ export function renderNastaveni(ctx, app) {
   const volby = (vyb, filtr) => [html`<option value="">—</option>`, ...ucty.filter(filtr).map((u) => html`<option value="${u.id}" ${u.id === vyb ? 'selected' : ''}>${u.banka} – ${u.nazev}</option>`)];
   const demo = app.store.druh === 'pamet';
   return html`
+  ${!demo ? html`<div class="ucet-lista"><span class="small">Přihlášen: <b>${auth.email() || 'Google účet'}</b></span><button type="button" class="btn2 slim" data-akce="app.odhlasit">Odhlásit</button></div>` : ''}
   ${demo ? html`<div class="alert"><b>Ukázkový režim.</b> Data jsou smyšlená a nic se neukládá. <button type="button" class="btn2 slim" data-akce="app.konecUkazky">Ukončit ukázku</button></div>` : ''}
   <form class="card" data-akce="nastaveni.moduly">
     <h2>Moduly</h2>

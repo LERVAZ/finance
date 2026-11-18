@@ -1,4 +1,9 @@
 # Co je nového
 
+## 1.0.1 – 18. 11. 2026
+- Přihlášení přesměrováním pro prohlížeče, kde přihlašovací okno Googlu nefunguje (tlačítko „Přihlásit jinak“).
+- Tlačítko Odhlásit nahoře v Nastavení a v průvodci.
+- Ve zveřejněné verzi není import ze staré tabulky.
+
 ## 1.0.0 – 17. 11. 2026
 - První verze pro testování: moduly, průvodce, import ze staré tabulky, rozložení dlaždic, barvy bank, zálohy tabulky.

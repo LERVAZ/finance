@@ -203,3 +203,7 @@ textarea.struktura { width: 100%; font: 12px/1.4 'IBM Plex Mono', monospace; bac
   background: var(--card); border: 1px solid var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,.35); font-size: 14px; }
 .nova-verze > span { display: grid; gap: 2px; }
 @media (min-width: 900px) { .nova-verze { bottom: 20px; } }
+
+/* přihlášení */
+.prihlasit-jinak { display: block; margin: 4px auto 0; font-size: 14px; }
+.ucet-lista { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin: 0 0 12px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }

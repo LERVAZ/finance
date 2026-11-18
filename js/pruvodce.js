@@ -14,7 +14,8 @@ export const pruvodceStav = P;
 function kroky(aktivni) {
   const k = [['moduly', 'Moduly'], ['penize', 'Kde máš peníze'], ['zaklad', 'Základní čísla'], ['zamek', 'Hotovo']];
   const i = k.findIndex((x) => x[0] === aktivni);
-  return html`<ol class="kroky" aria-label="Postup">${k.map(([id, n], j) => html`<li class="${j < i ? 'hotovo' : j === i ? 'ted' : ''}" ${j === i ? html`aria-current="step"` : ''}>${n}</li>`)}</ol>`;
+  return html`<ol class="kroky" aria-label="Postup">${k.map(([id, n], j) => html`<li class="${j < i ? 'hotovo' : j === i ? 'ted' : ''}" ${j === i ? html`aria-current="step"` : ''}>${n}</li>`)}</ol>
+    ${auth.tokenPlatny() ? html`<div class="ucet-lista"><span class="muted small">Přihlášen: ${auth.email() || 'Google účet'}</span><button type="button" class="linkbtn" data-akce="app.odhlasit">Odhlásit</button></div>` : ''}`;
 }
 
 function uvod() {
@@ -26,9 +27,10 @@ function uvod() {
       <li><b>Data máš jen ty</b> – ukládají se do Google tabulky na tvém Disku. Aplikace nemá žádný vlastní server ani databázi.</li>
       <li><b>Vidí jen svou tabulku.</b> Oprávnění Googlu dovolí aplikaci pracovat jen se soubory, které sama založí – ostatní soubory na Disku nevidí.</li>
       <li><b>Vybereš si, co chceš sledovat</b> – účty, útraty, trvalé platby, později investice, hypotéku a další.</li>
-      <li><b>Co zatím neumí:</b> napojení na banku a investice přijdou v dalších verzích. Zatím se vše zadává ručně.</li>
+      <li><b>Co zatím neumí:</b> napojení na banku přijde v další verzi. Zatím se vše zadává ručně.</li>
     </ul>
     <button type="button" class="wide" data-akce="pruvodce.prihlasit">Přihlásit přes Google</button>
+    <button type="button" class="linkbtn center prihlasit-jinak" data-akce="app.prihlasitJinak">Nejde přihlášení? Přihlásit jinak</button>
     <button type="button" class="wide btn2" data-akce="pruvodce.ukazka">Vyzkoušet s ukázkovými daty</button>
     <p class="muted small">Ukázka běží bez přihlášení se smyšlenými daty a nic se neukládá.</p>
   </section>`;

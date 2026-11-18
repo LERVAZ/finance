@@ -47,5 +47,5 @@ console.log('Verze ' + stara + ' → ' + nova + ' připravena (' + relative(proc
 console.log('Teď spusť:');
 console.log('  git add -A');
 console.log('  git commit -m "Verze ' + nova + '"');
-console.log('  git tag v' + nova);
+console.log('  git tag -a v' + nova + ' -m "Verze ' + nova + '"');
 console.log('  git push --follow-tags');

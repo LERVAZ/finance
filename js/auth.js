@@ -33,8 +33,52 @@ function gisReady() {
   });
 }
 
-/** Musí se volat z kliknutí (otevírá okno Googlu). */
+/* ---------- přihlášení přesměrováním (bez vyskakovacího okna a bez cookies třetích stran) ----------
+   Stránka odejde na Google a vrátí se s tokenem v adrese (#access_token=…). Adresa návratu musí být
+   v Google Cloud mezi „Authorized redirect URIs“ (např. https://lervaz.github.io/finance/ a http://localhost:8790/). */
+export const adresaNavratu = () => location.origin + location.pathname.replace(/index\.html$/, '');
+export const pouzivaPresmerovani = () => LS.get('zpusob') === 'presmerovani';
+
+export function prihlasitPresmerovanim() {
+  if (!NASTAVENI.googleClientId) throw new Error('Aplikace nemá nastavené Google Client ID (js/config.js).');
+  const stav = Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) => b.toString(16).padStart(2, '0')).join('');
+  try { sessionStorage.setItem('fin2-stav', stav); } catch (e) { /* bez sessionStorage se jen nekontroluje stav */ }
+  const p = new URLSearchParams({ client_id: NASTAVENI.googleClientId, redirect_uri: adresaNavratu(), response_type: 'token',
+    scope: SCOPE + ' openid email', include_granted_scopes: 'true', state: stav });
+  if (LS.get('email')) p.set('login_hint', LS.get('email'));
+  if (!LS.get('email') || LS.get('force-consent')) p.set('prompt', 'consent');
+  location.assign('https://accounts.google.com/o/oauth2/v2/auth?' + p.toString());
+}
+
+/** Po návratu z Googlu: uloží token z adresy a adresu uklidí. Vrací null (nic), true (přihlášeno) nebo text chyby. */
+export function zpracujNavrat() {
+  const h = new URLSearchParams(location.hash.replace(/^#/, ''));
+  if (!h.has('access_token') && !h.has('error')) return null;
+  history.replaceState(null, '', location.pathname + location.search);
+  let ocekavany = null;
+  try { ocekavany = sessionStorage.getItem('fin2-stav'); sessionStorage.removeItem('fin2-stav'); } catch (e) { /* nic */ }
+  if (ocekavany && h.get('state') !== ocekavany) return 'Přihlášení se nepovedlo ověřit, zkus to znovu.';
+  if (h.has('error')) return h.get('error') === 'access_denied' ? 'Přihlášení bylo zrušeno.' : 'Přihlášení se nepovedlo: ' + h.get('error');
+  if (!(h.get('scope') || '').split(' ').includes(SCOPE)) {
+    LS.set('force-consent', '1');
+    return 'Google nepovolil přístup k souborům aplikace. Přihlas se znovu a oprávnění na stránce Googlu potvrď.';
+  }
+  LS.del('force-consent');
+  LS.set('zpusob', 'presmerovani');
+  ulozToken(h.get('access_token'), Number(h.get('expires_in')) || 3600);
+  return true;
+}
+
+function ulozToken(t, expiresIn) {
+  LS.set('token', t);
+  LS.set('token-exp', String(Date.now() + expiresIn * 1000));
+  fetch('https://www.googleapis.com/oauth2/v3/userinfo', { headers: { Authorization: 'Bearer ' + t } })
+    .then((r) => r.json()).then((u) => { if (u.email) LS.set('email', u.email); }).catch(() => {});
+}
+
+/** Musí se volat z kliknutí (otevírá okno Googlu). Kdo už se přihlašoval přesměrováním, jde rovnou přesměrováním. */
 export async function prihlasit() {
+  if (pouzivaPresmerovani()) { prihlasitPresmerovanim(); return new Promise(() => {}); }
   if (!NASTAVENI.googleClientId) throw new Error('Aplikace nemá nastavené Google Client ID (js/config.js).');
   await gisReady();
   return new Promise((resolve, reject) => {
@@ -49,13 +93,17 @@ export async function prihlasit() {
           return reject(new Error('Google nepovolil přístup k souborům aplikace. Přihlas se znovu a oprávnění na stránce Googlu potvrď.'));
         }
         LS.del('force-consent');
-        LS.set('token', resp.access_token);
-        LS.set('token-exp', String(Date.now() + (resp.expires_in || 3600) * 1000));
-        fetch('https://www.googleapis.com/oauth2/v3/userinfo', { headers: { Authorization: 'Bearer ' + resp.access_token } })
-          .then((r) => r.json()).then((u) => { if (u.email) LS.set('email', u.email); }).catch(() => {});
+        ulozToken(resp.access_token, resp.expires_in || 3600);
         resolve();
       },
-      error_callback: (err) => reject(new Error(err && err.type === 'popup_closed' ? 'Okno přihlášení bylo zavřeno.' : 'Přihlášení se nepovedlo.'))
+      // okno se zavřelo bez předání přístupu (často blokované cookies třetích stran) → nabídnout přesměrování
+      error_callback: (err) => {
+        const e = new Error(err && err.type === 'popup_closed'
+          ? 'Přihlášení přes okno se nedokončilo. Klikni na „Přihlásit jinak“ – stránka se přepne na Google a zase se vrátí.'
+          : 'Přihlášení se nepovedlo. Zkus „Přihlásit jinak“.');
+        e.zkusPresmerovani = true;
+        reject(e);
+      }
     });
     client.requestAccessToken({ prompt: LS.get('email') && !LS.get('force-consent') ? '' : 'consent' });
   });
