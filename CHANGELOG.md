@@ -1,5 +1,9 @@
 # Co je nového
 
+## 1.1.1 – 18. 11. 2026
+- Na kartě Výplata tlačítko Zapsat výplatu (když běží jen odhad nebo se blíží výplatní den), předvyplní dnešní datum.
+- Po zapsání výplaty se Útraty přepnou rovnou na nové období.
+
 ## 1.1.0 – 18. 11. 2026
 - Období v Útratách začíná dnem, kdy výplata skutečně přišla (ne pevným dnem).
 - Na Přehledu (karta Výplata) a v Útratách dvě velká čísla: výsledek minulého období a kolik zbývá z výplaty teď.

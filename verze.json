@@ -1,10 +1,8 @@
 {
-  "verze": "1.1.0",
+  "verze": "1.1.1",
   "datum": "2026-11-18",
   "novinky": [
-    "Období v Útratách začíná dnem, kdy výplata skutečně přišla (ne pevným dnem).",
-    "Na Přehledu (karta Výplata) a v Útratách dvě velká čísla: výsledek minulého období a kolik zbývá z výplaty teď.",
-    "Spořicí účty: úrok po 15% dani a odhad stavu ke konci měsíce.",
-    "Investice a pojištění: stav ke konci měsíce a změna za měsíc v Kč."
+    "Na kartě Výplata tlačítko Zapsat výplatu (když běží jen odhad nebo se blíží výplatní den), předvyplní dnešní datum.",
+    "Po zapsání výplaty se Útraty přepnou rovnou na nové období."
   ]
 }

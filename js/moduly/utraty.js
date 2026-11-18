@@ -1,12 +1,12 @@
 /* Modul Útraty za měsíc: období od výplaty do výplaty, výdaje, převody na/ze spořicího, kolik zbývá. */
 import { html, raw, karta, dlazdice, trida } from '../html.js';
 import { kc, sk, cislo, datumKratce, precti, MESICE, TYPY_POHYBU } from '../texty.js';
-import { seznamObdobi, klicObdobi } from '../vypocty/obdobi.js';
+import { seznamObdobi, klicObdobi, kalendarVyplat } from '../vypocty/obdobi.js';
 import { zmenaSporiciho, jeVydaj } from '../vypocty/utraty.js';
 import { zustatekK } from '../vypocty/ucty.js';
 import { sloupce, cv } from '../grafy.js';
 import { vykresliDlazdice } from '../rozlozeni.js';
-import { pridejMesice } from '../vypocty/datumy.js';
+import { pridejMesice, pridejDny } from '../vypocty/datumy.js';
 
 const predchoziKlic = (klic) => pridejMesice(klic + '-01', -1).slice(0, 7);
 
@@ -123,7 +123,14 @@ function karty(ctx) {
     html: karta('green', 'Výplata', html`${dveCisla(ctx, P, C)}
     <div class="split"><span>útraty <b class="num ${C.vydaje ? 'neg' : ''}">${C.vydaje ? '−' : ''}${kc(C.vydaje)}</b></span>
       ${ctx.zapnuto('trvale') ? html`<span>trvalé <b class="num">−${kc(C.trvSoucet)}</b></span>` : ''}</div>
-    <button type="button" class="btn2 slim" data-akce="prejdi" data-tab="utraty">Útraty za měsíc →</button>`) }];
+    <div class="hbtns"><button type="button" class="btn2 slim" data-akce="prejdi" data-tab="utraty">Útraty za měsíc →</button>
+      ${nabidnoutVyplatu(ctx, C) ? html`<button type="button" class="slim" data-akce="utraty.zapsatVyplatu">${C.odhad ? 'Zapsat výplatu' : 'Přišla výplata? Zapsat'}</button>` : ''}</div>`) }];
+}
+
+/** Nabídnout zápis výplaty: období běží jen na odhad, nebo se blíží další výplata (10 dní před výplatním dnem). */
+function nabidnoutVyplatu(ctx, C) {
+  if (C.odhad) return true;
+  return ctx.dnes >= pridejDny(pridejDny(C.hranice.konec, 1), -10);
 }
 
 /** Pohyb na spořicí / ze spořicího: zapíše nový stav spořicího účtu (historie zůstane čitelná). */
@@ -142,7 +149,9 @@ const akce = {
   'utraty.typ': (ctx, el) => { const k = el.form.querySelector('[name="kategorie"]'); if (k) k.disabled = !jeVydaj(el.value); return false; },
   'utraty.zapsatVyplatu': (ctx) => {
     const klic = ctx.ui.obdobi || ctx.aktualniKlic;
-    ctx.ui.predvyplnit = { typ: 'Příjem', popis: 'Výplata', castka: ctx.cfg.vyplata_castka || '', datum: ctx.obdobi(klic).hranice.zacatek };
+    // u aktuálního období dnešek (výplata právě přišla a začne nové období), u starších začátek období
+    const datum = klic === ctx.aktualniKlic ? ctx.dnes : ctx.obdobi(klic).hranice.zacatek;
+    ctx.ui.predvyplnit = { typ: 'Příjem', popis: 'Výplata', castka: ctx.cfg.vyplata_castka || '', datum };
     ctx.prejdi('zapis', 'platba');
   },
   'utraty.pridat': async (ctx, el, f) => {
@@ -154,7 +163,8 @@ const akce = {
     await ctx.store.pridej('pohyby', z);
     const sp = await upravSporici(ctx, zmenaSporiciho(z.typ, z.castka), z.datum, (z.popis || z.typ));
     ctx.ui.predvyplnit = null;
-    ctx.ui.obdobi = klicObdobi(z.datum, ctx.kalendar());
+    // kalendář znovu i s novým pohybem (zapsaná výplata posune začátek období)
+    ctx.ui.obdobi = klicObdobi(z.datum, kalendarVyplat(ctx.vyplataDen(), ctx.data('pohyby'), ctx.cfg.vyplata_castka));
     ctx.zprava('Přidáno: ' + (z.popis || z.typ) + ' ' + kc(z.castka) + '.' + sp);
   },
   'utraty.smazat': async (ctx, el) => {
