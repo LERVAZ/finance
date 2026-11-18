@@ -1,5 +1,6 @@
 /* Nastavení: moduly, výplata, účty pro výplatu / spořicí, kategorie, vzhled, zámek, data, odhlášení. */
-import { html, karta, ikona } from './html.js';
+import { html, karta, ikona, raw } from './html.js';
+import { nactiNavod } from './napoveda.js';
 import { cislo, precti } from './texty.js';
 import { MODULY, PRIPRAVUJEME, tabulkyProModuly } from './moduly/registr.js';
 import { renderKontroly } from './kontrola.js';
@@ -10,6 +11,9 @@ import { datum } from './texty.js';
 
 export function renderNastaveni(ctx, app) {
   if (ctx.ui.kontrola) return renderKontroly(app.store, 'nastaveni');
+  if (ctx.ui.napoveda) return html`<div class="hbtns"><button type="button" class="btn2 slim" data-akce="nastaveni.napovedaZpet">← Zpět do nastavení</button></div>
+    <article class="card navod">${raw(ctx.ui.napoveda)}</article>
+    <div class="hbtns"><button type="button" class="btn2 slim" data-akce="nastaveni.napovedaZpet">← Zpět do nastavení</button></div>`;
   if (ctx.ui.import && doplnky.import) return doplnky.import.renderImport(app, 'nastaveni', ctx);
   const c = ctx.cfg;
   const zapnute = ctx.moduly.map((m) => m.id);
@@ -40,6 +44,8 @@ export function renderNastaveni(ctx, app) {
   </form>` : ''}
   ${!demo && doplnky.import ? karta('', 'Import ze staré tabulky', html`<p class="muted small">Jednorázový převod dat ze staré Google tabulky. Stará tabulka se jen čte, nic se v ní nezmění.</p>
     <div class="hbtns"><button type="button" class="btn2" data-akce="import.otevrit">Importovat ze staré tabulky</button></div>`) : ''}
+  ${karta('', 'Nápověda', html`<p class="muted small">Návod krok za krokem: instalace na plochu, přihlášení, zápis plateb, zámek, časté potíže.</p>
+    <div class="hbtns"><button type="button" class="btn2" data-akce="nastaveni.napoveda">Otevřít návod</button></div>`)}
   ${karta('', 'Co jde napojit', html`<p class="muted small">Napiš své banky a produkty a aplikace ti řekne, co půjde stahovat automaticky a co se zadává ručně. Z výsledku rovnou založí účty a produkty.</p>
     <div class="hbtns"><button type="button" class="btn2" data-akce="nastaveni.kontrola">Zkontrolovat banky a produkty</button></div>`)}
   <form class="card" data-akce="nastaveni.kategorie">
@@ -67,11 +73,13 @@ export function renderNastaveni(ctx, app) {
       : html`<p class="muted small">Zatím žádná záloha.</p>`) : ''}
     <div class="hbtns">${ctx.ui.zalohy ? '' : html`<button type="button" class="btn2" data-akce="nastaveni.zalohy">Zobrazit zálohy</button>`}
       <button type="button" class="btn2" data-akce="nastaveni.zalohovat">Zálohovat teď</button></div>
-    <p class="note">Návrat k záloze: zálohu otevři a podívej se, jestli je v ní to, co chceš. Napiš mi, a vrátíme ji jako hlavní tabulku.</p>` : ''}`)}
+    <p class="note">Zálohy jsou kopie tabulky na tvém Disku. Když chceš některou použít místo současné, otevři ji a podívej se, jestli je v ní to, co chceš – postup je v návodu (Nastavení → Nápověda).</p>` : ''}`)}
   <p class="muted small center">Finance ${VERZE} · schéma dat v${c.schema_version || '?'}</p>`;
 }
 
 export const nastaveniAkce = {
+  'nastaveni.napoveda': async (ctx) => { ctx.ui.napoveda = await nactiNavod(); window.scrollTo(0, 0); },
+  'nastaveni.napovedaZpet': (ctx) => { ctx.ui.napoveda = null; window.scrollTo(0, 0); },
   'nastaveni.kontrola': (ctx) => { ctx.ui.kontrola = true; window.scrollTo(0, 0); },
   'nastaveni.zalohy': async (ctx, el, f, app) => { ctx.ui.zalohy = await app.store.zalohy(); },
   'nastaveni.zalohovat': async (ctx, el, f, app) => {

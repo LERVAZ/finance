@@ -9,6 +9,13 @@ import { tmpdir } from 'node:os';
 const [, , EXE, URL0, VYSTUP, JEN] = process.argv;
 const PORT = 9333;
 const SCENARE = [
+  { jmeno: 'navod-uvod', url: '/', w: 390, h: 760 },
+  { jmeno: 'navod-moduly', url: '/?ukazka#prehled', w: 390, h: 760, kroky: ["FINANCE.rezim='pruvodce'; FINANCE.pruvodceDalsi('moduly'); FINANCE.render()", "document.querySelectorAll('.alert').forEach(e=>e.remove()); document.getElementById('hSub').textContent=''"] },
+  { jmeno: 'navod-prehled', url: '/?ukazka#prehled', w: 390, h: 760, kroky: ["document.querySelectorAll('.alert').forEach(e=>e.remove()); document.getElementById('hSub').textContent=''"] },
+  { jmeno: 'navod-utraty', url: '/?ukazka#utraty', w: 390, h: 760, kroky: ["document.querySelectorAll('.alert').forEach(e=>e.remove()); document.getElementById('hSub').textContent=''"] },
+  { jmeno: 'navod-zapis', url: '/?ukazka#zapis', w: 390, h: 760, kroky: ["document.querySelectorAll('.alert').forEach(e=>e.remove()); document.getElementById('hSub').textContent=''"] },
+  { jmeno: 'navod-zamek', url: '/?ukazka#nastaveni', w: 390, h: 760, kroky: ["document.querySelectorAll('.alert').forEach(e=>e.remove()); document.getElementById('hSub').textContent=''", "[...document.querySelectorAll('h2')].find(h=>h.textContent.includes('Vzhled')).scrollIntoView({block:'center'})"] },
+  { jmeno: 'napoveda-mobil', url: '/?ukazka#nastaveni', w: 390, h: 1400, cekej: 1200, kroky: ["document.querySelector('[data-akce=\"nastaveni.napoveda\"]').click()"] },
   { jmeno: 'uvod-mobil', url: '/', w: 390, h: 844 },
   { jmeno: 'prehled-mobil', url: '/?ukazka#prehled', w: 390, h: 1500 },
   { jmeno: 'ucty-mobil', url: '/?ukazka#ucty', w: 390, h: 1000, kroky: ["document.querySelector('[data-akce=\"ucty.rozbal\"]').click()"] },

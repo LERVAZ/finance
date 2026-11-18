@@ -30,6 +30,7 @@ function uvod() {
       <li><b>Co zatím neumí:</b> napojení na banku přijde v další verzi. Zatím se vše zadává ručně.</li>
     </ul>
     <button type="button" class="wide" data-akce="pruvodce.prihlasit">Přihlásit přes Google</button>
+    <p class="center small"><a href="https://github.com/LERVAZ/finance/blob/main/docs/NAVOD.md" target="_blank" rel="noopener">Návod – jak začít</a></p>
   </section>`;
 }
 

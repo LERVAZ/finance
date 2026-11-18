@@ -1,5 +1,8 @@
 # Co je nového
 
+## 1.2.0 – 18. 11. 2026
+- Návod pro uživatele v aplikaci (Nastavení → Nápověda) a odkaz na něj na úvodní stránce.
+
 ## 1.1.1 – 18. 11. 2026
 - Na kartě Výplata tlačítko Zapsat výplatu (když běží jen odhad nebo se blíží výplatní den), předvyplní dnešní datum.
 - Po zapsání výplaty se Útraty přepnou rovnou na nové období.

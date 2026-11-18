@@ -2,6 +2,8 @@
 
 PWA pro mobil i PC. Každý uživatel má data ve **své vlastní Google tabulce**. Aplikace nemá žádný server ani databázi.
 
+Návod pro uživatele: [docs/NAVOD.md](docs/NAVOD.md) (v aplikaci Nastavení → Nápověda). Provoz, Google Cloud a vydávání verzí: [docs/PROVOZ.md](docs/PROVOZ.md).
+
 ## Vyzkoušení
 
 ```bash

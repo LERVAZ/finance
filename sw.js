@@ -1,8 +1,8 @@
 /* Service worker: aplikace se otevře i bez signálu. Data z tabulky se nikdy neukládají do mezipaměti.
    Název mezipaměti nastavuje tools/vydat.js podle verze. */
-const CACHE = 'finance2-1.1.1';
+const CACHE = 'finance2-1.2.0';
 const SOUBORY = ['./', 'index.html', 'css/base.css', 'css/app.css', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png',
-  'js/app.js', 'js/verze.js', 'js/auth.js', 'js/config.js', 'js/html.js', 'js/texty.js', 'js/schema.js', 'js/ukazka.js', 'js/pruvodce.js', 'js/nastaveni.js',
+  'js/app.js', 'js/verze.js', 'js/napoveda.js', 'docs/NAVOD.md', 'js/auth.js', 'js/config.js', 'js/html.js', 'js/texty.js', 'js/schema.js', 'js/ukazka.js', 'js/pruvodce.js', 'js/nastaveni.js',
   'js/editor.js', 'js/zalozky.js', 'js/grafy.js', 'js/kontrola.js', 'js/doplnky.js', 'js/kontext.js', 'js/rozlozeni.js', 'js/banky.js', 'js/vypocty/katalog.js', 'data/katalog.json',
   'js/vypocty/datumy.js', 'js/vypocty/obdobi.js', 'js/vypocty/utraty.js', 'js/vypocty/ucty.js', 'js/vypocty/hypoteka.js', 'js/vypocty/investice.js', 'js/vypocty/produkty.js', 'js/vypocty/platby.js',
   'js/uloziste/prevod.js', 'js/uloziste/pamet.js', 'js/uloziste/sheets.js',

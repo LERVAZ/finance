@@ -1,8 +1,7 @@
 {
-  "verze": "1.1.1",
+  "verze": "1.2.0",
   "datum": "2026-11-18",
   "novinky": [
-    "Na kartě Výplata tlačítko Zapsat výplatu (když běží jen odhad nebo se blíží výplatní den), předvyplní dnešní datum.",
-    "Po zapsání výplaty se Útraty přepnou rovnou na nové období."
+    "Návod pro uživatele v aplikaci (Nastavení → Nápověda) a odkaz na něj na úvodní stránce."
   ]
 }

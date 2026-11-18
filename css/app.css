@@ -217,3 +217,10 @@ textarea.struktura { width: 100%; font: 12px/1.4 'IBM Plex Mono', monospace; bac
 .dve-cisla .p b { font-weight: 500; }
 @container (max-width: 460px) { .dve-cisla .dc { padding: 10px; } .dve-cisla .v { font-size: 19px; } .dve-cisla .p, .dve-cisla .l { font-size: 12px; } }
 @container (max-width: 260px) { .dve-cisla .v { font-size: 16px; } }
+
+/* Nápověda (návod v aplikaci) */
+.navod { line-height: 1.55; }
+.navod h2 { margin-top: 4px; } .navod h3 { margin: 22px 0 6px; } .navod h4 { margin: 16px 0 4px; }
+.navod img { display: block; max-width: min(100%, 360px); height: auto; border: 1px solid var(--line); border-radius: 12px; margin: 10px 0; }
+.navod li { margin: 4px 0; } .navod code { font-family: 'IBM Plex Mono', monospace; font-size: .92em; }
+.navod p { margin: 8px 0; } .navod ul, .navod ol { margin: 6px 0; padding-left: 22px; }
