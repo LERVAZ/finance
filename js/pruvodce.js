@@ -30,9 +30,6 @@ function uvod() {
       <li><b>Co zatím neumí:</b> napojení na banku přijde v další verzi. Zatím se vše zadává ručně.</li>
     </ul>
     <button type="button" class="wide" data-akce="pruvodce.prihlasit">Přihlásit přes Google</button>
-    <button type="button" class="linkbtn center prihlasit-jinak" data-akce="app.prihlasitJinak">Nejde přihlášení? Přihlásit jinak</button>
-    <button type="button" class="wide btn2" data-akce="pruvodce.ukazka">Vyzkoušet s ukázkovými daty</button>
-    <p class="muted small">Ukázka běží bez přihlášení se smyšlenými daty a nic se neukládá.</p>
   </section>`;
 }
 

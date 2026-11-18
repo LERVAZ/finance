@@ -1,4 +1,4 @@
-/* Přihlášení Google účtem (Google Identity Services, token client) a zámek otiskem / Windows Hello (WebAuthn).
+/* Přihlášení Google účtem (OAuth přesměrováním) a zámek otiskem / Windows Hello (WebAuthn).
    Převzato ze staré verze. Klíče v localStorage mají předponu fin2-, aby se nepletly se starou aplikací na stejné adrese. */
 import { NASTAVENI } from './config.js';
 
@@ -22,22 +22,10 @@ export async function token() {
 }
 export function email() { return LS.get('email') || ''; }
 
-function gisReady() {
-  return new Promise((resolve, reject) => {
-    let n = 0;
-    (function cekej() {
-      if (window.google && google.accounts && google.accounts.oauth2) return resolve();
-      if (++n > 100) return reject(new Error('Nepodařilo se načíst přihlášení Google. Zkontroluj připojení.'));
-      setTimeout(cekej, 100);
-    })();
-  });
-}
-
 /* ---------- přihlášení přesměrováním (bez vyskakovacího okna a bez cookies třetích stran) ----------
    Stránka odejde na Google a vrátí se s tokenem v adrese (#access_token=…). Adresa návratu musí být
    v Google Cloud mezi „Authorized redirect URIs“ (např. https://lervaz.github.io/finance/ a http://localhost:8790/). */
 export const adresaNavratu = () => location.origin + location.pathname.replace(/index\.html$/, '');
-export const pouzivaPresmerovani = () => LS.get('zpusob') === 'presmerovani';
 
 export function prihlasitPresmerovanim() {
   if (!NASTAVENI.googleClientId) throw new Error('Aplikace nemá nastavené Google Client ID (js/config.js).');
@@ -64,7 +52,6 @@ export function zpracujNavrat() {
     return 'Google nepovolil přístup k souborům aplikace. Přihlas se znovu a oprávnění na stránce Googlu potvrď.';
   }
   LS.del('force-consent');
-  LS.set('zpusob', 'presmerovani');
   ulozToken(h.get('access_token'), Number(h.get('expires_in')) || 3600);
   return true;
 }
@@ -76,43 +63,13 @@ function ulozToken(t, expiresIn) {
     .then((r) => r.json()).then((u) => { if (u.email) LS.set('email', u.email); }).catch(() => {});
 }
 
-/** Musí se volat z kliknutí (otevírá okno Googlu). Kdo už se přihlašoval přesměrováním, jde rovnou přesměrováním. */
-export async function prihlasit() {
-  if (pouzivaPresmerovani()) { prihlasitPresmerovanim(); return new Promise(() => {}); }
-  if (!NASTAVENI.googleClientId) throw new Error('Aplikace nemá nastavené Google Client ID (js/config.js).');
-  await gisReady();
-  return new Promise((resolve, reject) => {
-    const client = google.accounts.oauth2.initTokenClient({
-      client_id: NASTAVENI.googleClientId,
-      scope: SCOPE + ' openid email',
-      hint: LS.get('email') || undefined,
-      callback: (resp) => {
-        if (resp.error) return reject(new Error('Přihlášení se nepovedlo: ' + resp.error));
-        if (!google.accounts.oauth2.hasGrantedAllScopes(resp, SCOPE)) {
-          LS.set('force-consent', '1');
-          return reject(new Error('Google nepovolil přístup k souborům aplikace. Přihlas se znovu a oprávnění na stránce Googlu potvrď.'));
-        }
-        LS.del('force-consent');
-        ulozToken(resp.access_token, resp.expires_in || 3600);
-        resolve();
-      },
-      // okno se zavřelo bez předání přístupu (často blokované cookies třetích stran) → nabídnout přesměrování
-      error_callback: (err) => {
-        const e = new Error(err && err.type === 'popup_closed'
-          ? 'Přihlášení přes okno se nedokončilo. Klikni na „Přihlásit jinak“ – stránka se přepne na Google a zase se vrátí.'
-          : 'Přihlášení se nepovedlo. Zkus „Přihlásit jinak“.');
-        e.zkusPresmerovani = true;
-        reject(e);
-      }
-    });
-    client.requestAccessToken({ prompt: LS.get('email') && !LS.get('force-consent') ? '' : 'consent' });
-  });
-}
+/** Přihlášení: stránka se přepne na Google a vrátí se s tokenem (funguje i při blokovaných cookies třetích stran). */
+export function prihlasit() { prihlasitPresmerovanim(); return new Promise(() => {}); }
 
 export function odhlasit() {
   const t = LS.get('token');
   LS.del('token'); LS.del('token-exp');
-  try { if (t && window.google && google.accounts) google.accounts.oauth2.revoke(t, () => {}); } catch (e) { /* nic */ }
+  if (t) fetch('https://oauth2.googleapis.com/revoke', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'token=' + encodeURIComponent(t) }).catch(() => {});
 }
 
 /* ---------- zámek ---------- */

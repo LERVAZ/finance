@@ -38,6 +38,7 @@ const SCENARE = [
   { jmeno: 'dl-vyhled-desktop', url: '/?ukazka#plany', w: 1280, h: 1600 },
   { jmeno: 'dl-grafy-desktop', url: '/?ukazka#plany', w: 1280, h: 1500, cekej: 2500, kroky: ["document.querySelector('[data-akce=\"plany.sub\"][data-hodnota=\"grafy\"]').click()"] },
   { jmeno: 'dl-kolace-mobil-kompakt', url: '/?ukazka#plany', w: 390, h: 1100, cekej: 2000, kroky: ["document.querySelector('[data-akce=\"plany.sub\"][data-hodnota=\"kolace\"]').click()", "document.querySelector('[data-akce=\"rozl.upravit\"]').click()", "document.querySelector('[data-akce=\"rozl.styl\"][data-hodnota=\"kompaktni\"]').click()", "document.querySelector('[data-akce=\"rozl.ulozit\"]').click()", "document.querySelector('[data-akce=\"rozl.otevrit\"]').click()"] },
+  { jmeno: 'zahlavi-odhlasit', url: '/?ukazka#prehled', w: 1280, h: 300, kroky: ["document.getElementById('btnOdhlasit').hidden = false"] },
   { jmeno: 'prehled-desktop', url: '/?ukazka#prehled', w: 1280, h: 1300 },
   { jmeno: 'utraty-desktop-svetly', url: '/?ukazka#utraty', w: 1280, h: 1300, svetly: true },
   { jmeno: 'vyhled-mobil', url: '/?ukazka#plany', w: 390, h: 3600 },

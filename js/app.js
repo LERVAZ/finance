@@ -57,12 +57,12 @@ function render() {
     document.body.classList.add('bez-nav');
     $('hTitle').textContent = 'Finance';
     $('hSub').textContent = '';
-    $('btnObnovit').hidden = true; $('btnNastaveni').hidden = true;
+    $('btnObnovit').hidden = true; $('btnNastaveni').hidden = true; $('btnOdhlasit').hidden = true;
     $('content').innerHTML = app.rezim === 'pruvodce' ? renderPruvodce(app).s : '<div id="loading">Načítám…</div>';
     return;
   }
   document.body.classList.remove('bez-nav');
-  $('btnObnovit').hidden = app.store.druh === 'pamet'; $('btnNastaveni').hidden = false;
+  $('btnObnovit').hidden = app.store.druh === 'pamet'; $('btnNastaveni').hidden = false; $('btnOdhlasit').hidden = app.store.druh === 'pamet';
   const ctx = kontext();
   const tabs = zalozky(ctx);
   let tab = app.ui.tab === 'nastaveni' ? NASTAVENI_TAB : tabs.find((t) => t.id === app.ui.tab);
@@ -195,8 +195,7 @@ function ukazOverlay(obsah) { const o = $('overlay'); o.innerHTML = '<div class=
 function skryjOverlay() { const o = $('overlay'); o.hidden = true; o.innerHTML = ''; }
 function ukazPrihlaseni(msg) {
   ukazOverlay(ikona('zamek', 56).s + '<h1>Finance</h1><p class="muted">' + esc(msg || 'Přihlášení vypršelo.') + '</p>' +
-    '<button type="button" class="wide" data-akce="app.prihlasitZnovu">Přihlásit přes Google</button>' +
-    '<button type="button" class="linkbtn prihlasit-jinak" data-akce="app.prihlasitJinak">Nejde přihlášení? Přihlásit jinak</button>');
+    '<button type="button" class="wide" data-akce="app.prihlasitZnovu">Přihlásit přes Google</button>');
 }
 function ukazZamek() {
   ukazOverlay(ikona('zamek', 56).s + '<h1>Finance</h1><p class="muted">Pro otevření se ověř otiskem, obličejem nebo PINem zařízení.</p>' +
@@ -299,7 +298,6 @@ AKCE['app.kontrolaVerze'] = async () => {
   zprava(!j ? 'Nepodařilo se zjistit, jestli je nová verze (jsi online?).' : app.novaVerze ? 'Je k dispozici verze ' + j.verze + '.' : 'Máš nejnovější verzi ' + VERZE + '.');
 };
 AKCE['app.znovu'] = async () => { await start(); return false; };
-AKCE['app.prihlasitJinak'] = () => { auth.prihlasitPresmerovanim(); return false; };
 AKCE['app.prihlasitZnovu'] = async () => {
   await auth.prihlasit();
   skryjOverlay();

@@ -22,7 +22,6 @@ test('návrat z Googlu: token se uloží, adresa se uklidí, stav se ověří', 
   assert.equal(okno.posledni, '/finance/');
   assert.equal(auth.LS.get('token'), 'TOKEN1');
   assert.ok(auth.tokenPlatny());
-  assert.ok(auth.pouzivaPresmerovani());
   assert.equal(auth.adresaNavratu(), 'https://example.github.io/finance/');
 });
 

@@ -1,9 +1,9 @@
 {
-  "verze": "1.0.1",
+  "verze": "1.0.2",
   "datum": "2026-11-18",
   "novinky": [
-    "Přihlášení přesměrováním pro prohlížeče, kde přihlašovací okno Googlu nefunguje (tlačítko „Přihlásit jinak“).",
-    "Tlačítko Odhlásit nahoře v Nastavení a v průvodci.",
-    "Ve zveřejněné verzi není import ze staré tabulky."
+    "Tlačítko Přihlásit přes Google přihlašuje rovnou přes stránku Googlu (bez vyskakovacího okna).",
+    "Tlačítko Odhlásit nahoře vedle ozubeného kolečka.",
+    "Z úvodní stránky zmizelo vyzkoušení s ukázkovými daty."
   ]
 }

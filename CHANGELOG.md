@@ -1,5 +1,10 @@
 # Co je nového
 
+## 1.0.2 – 18. 11. 2026
+- Tlačítko Přihlásit přes Google přihlašuje rovnou přes stránku Googlu (bez vyskakovacího okna).
+- Tlačítko Odhlásit nahoře vedle ozubeného kolečka.
+- Z úvodní stránky zmizelo vyzkoušení s ukázkovými daty.
+
 ## 1.0.1 – 18. 11. 2026
 - Přihlášení přesměrováním pro prohlížeče, kde přihlašovací okno Googlu nefunguje (tlačítko „Přihlásit jinak“).
 - Tlačítko Odhlásit nahoře v Nastavení a v průvodci.
