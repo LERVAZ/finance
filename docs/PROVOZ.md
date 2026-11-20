@@ -108,4 +108,5 @@ Pak vydat jako novou opravnou verzi (`node tools/vydat.js …`). Seznam verzí: 
 ## Bezpečnost
 
 - Do repozitáře nikdy: osobní data (`podklady/`, `MOJE_DATA.md`), skutečná čísla v testech, `.pem` a jiné klíče, `.env`. Hlídá to `.gitignore`.
-- Napojení banky (Enable Banking) zatím není. Až bude, soukromý `.pem` klíč zůstane jen u uživatele.
+- Napojení banky (Enable Banking): každý uživatel má vlastní aplikaci u Enable Banking a vlastní klíč `.pem`. Klíč je jen ve vlastnostech skriptu v jeho tabulce (`apps-script/Banka.gs`), nikdy v aplikaci, v repozitáři ani u provozovatele. Provozovatel cizí bankovní data nevidí. Podrobnosti: `docs/ROZHODNUTI.md` (jen lokálně), návod pro uživatele v `docs/NAVOD.md`, kapitola 6.
+- Skript `apps-script/Banka.gs` je veřejný a nesmí obsahovat žádné klíče ani ID.

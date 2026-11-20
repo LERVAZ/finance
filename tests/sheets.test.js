@@ -108,3 +108,20 @@ test('založení, zápis, úprava, smazání a doplnění schématu v Google tab
   assert.equal(G.log.slice(pred2).filter((x) => x.includes('/copy')).length, 0);
   assert.equal(G.log.filter((x) => x.includes('deleteDimension')).length, 0);
 });
+
+test('hromadná úprava zapíše jen změněné buňky, ostatní sloupce (třeba od skriptu) nechá', async () => {
+  const G = falesnyGoogle();
+  const token = async () => 'T';
+  const s = await SheetsUloziste.zaloz(token, 'Finance – data', ['_config', 'banka_pohyby']);
+  const [a, b] = await s.pridejVice('banka_pohyby', [{ id: 'u:1', datum: '2026-11-17', castka: -100, popis: 'A' }, { id: 'u:2', datum: '2026-11-18', castka: -200, popis: 'B' }]);
+  // skript mezitím změnil popis u druhého řádku přímo v tabulce
+  const hl = G.listy.get('banka_pohyby').mrizka[0];
+  G.listy.get('banka_pohyby').mrizka[2][hl.indexOf('popis')] = 'B ze skriptu';
+  const pred = G.log.length;
+  await s.upravVice('banka_pohyby', [{ id: a.id, zmeny: { stav: 'zapsano', pohyb_id: 'p1' } }, { id: b.id, zmeny: { stav: 'ignorovano' } }]);
+  assert.deepEqual(G.log.slice(pred), ['GET /v4/spreadsheets/S1/values/' + encodeURIComponent("'banka_pohyby'!A:A"), 'POST /v4/spreadsheets/S1/values:batchUpdate']);
+  const g = G.listy.get('banka_pohyby').mrizka;
+  assert.equal(g[1][hl.indexOf('stav')], 'zapsano'); assert.equal(g[1][hl.indexOf('pohyb_id')], 'p1');
+  assert.equal(g[2][hl.indexOf('stav')], 'ignorovano'); assert.equal(g[2][hl.indexOf('popis')], 'B ze skriptu');
+  await assert.rejects(() => s.upravVice('banka_pohyby', [{ id: 'neni', zmeny: { stav: 'x' } }]), /nebyl nalezen/);
+});

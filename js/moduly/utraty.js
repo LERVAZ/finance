@@ -134,7 +134,7 @@ function nabidnoutVyplatu(ctx, C) {
 }
 
 /** Pohyb na spořicí / ze spořicího: zapíše nový stav spořicího účtu (historie zůstane čitelná). */
-async function upravSporici(ctx, delta, kDatu, popis) {
+export async function upravSporici(ctx, delta, kDatu, popis) {
   const id = ctx.cfg.ucet_sporici;
   if (!delta || !id || !ctx.zapnuto('ucty') || !ctx.store.maTabulku('stavy')) return '';
   const pred = zustatekK(ctx.data('stavy'), id);

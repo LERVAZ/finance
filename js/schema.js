@@ -1,7 +1,7 @@
 /* Datový model: listy v tabulce uživatele. První řádek = hlavička, žádné vzorce.
    Změny jen přidáváním (nové listy, nové sloupce na konec). Nic se nemaže ani nepřejmenovává. */
 
-export const VERZE_SCHEMATU = 2; // v2: pojisteni + vlozeno_zaklad, vlozeno_k_datu
+export const VERZE_SCHEMATU = 3; // v2: pojisteni + vlozeno_zaklad, vlozeno_k_datu; v3: banka_ucty, banka_pohyby
 
 /* typy sloupců: text, cislo, castka, datum, bool, json */
 export const TABULKY = {
@@ -78,6 +78,16 @@ export const TABULKY = {
   historie: {
     popis: 'Historie hodnot ručních položek (polozka = list:id). Zapisuje aplikace při každé změně hodnoty.',
     sloupce: [['id', 'text'], ['datum', 'datum'], ['polozka', 'text'], ['hodnota', 'castka']]
+  },
+  banka_ucty: {
+    popis: 'Účty připojené přes Enable Banking. Zapisuje skript v tabulce (Rozšíření → Apps Script). ucet_id = účet v aplikaci.',
+    sloupce: [['id', 'text'], ['relace', 'text'], ['banka', 'text'], ['iban', 'text'], ['nazev', 'text'], ['mena', 'text'], ['ucet_id', 'text'],
+      ['zustatek', 'castka'], ['k_datu', 'datum'], ['souhlas_do', 'datum'], ['stazeno', 'text'], ['chyba', 'text']]
+  },
+  banka_pohyby: {
+    popis: 'Pohyby stažené z banky. stav: prázdný = čeká na potvrzení, zapsano / sparovano / trvala / ignorovano.',
+    sloupce: [['id', 'text'], ['ucet_uid', 'text'], ['datum', 'datum'], ['castka', 'castka'], ['mena', 'text'], ['protistrana', 'text'],
+      ['protiucet', 'text'], ['popis', 'text'], ['stav', 'text'], ['pohyb_id', 'text'], ['stazeno', 'text']]
   },
   archiv: {
     popis: 'Archiv / projekty: jednorázové akce s rozpadem nákladů. je_naklad = FALSE pro položky, které nejsou náklad (např. vrácení dluhu).',

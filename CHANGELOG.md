@@ -1,5 +1,10 @@
 # Co je nového
 
+## 1.3.0 – 20. 11. 2026
+- Napojení na banku (Enable Banking): skript do vlastní tabulky stahuje zůstatky a platby 4× denně
+- Zápis → Z banky: platby z banky jen potvrdíš, ruční zápisy se spárují, trvalé platby a převody mezi vlastními účty se nezapisují
+- Návod: kapitola 6 – napojení banky krok za krokem
+
 ## 1.2.0 – 18. 11. 2026
 - Návod pro uživatele v aplikaci (Nastavení → Nápověda) a odkaz na něj na úvodní stránce.
 

@@ -1,7 +1,9 @@
 {
-  "verze": "1.2.0",
-  "datum": "2026-11-18",
+  "verze": "1.3.0",
+  "datum": "2026-11-20",
   "novinky": [
-    "Návod pro uživatele v aplikaci (Nastavení → Nápověda) a odkaz na něj na úvodní stránce."
+    "Napojení na banku (Enable Banking): skript do vlastní tabulky stahuje zůstatky a platby 4× denně",
+    "Zápis → Z banky: platby z banky jen potvrdíš, ruční zápisy se spárují, trvalé platby a převody mezi vlastními účty se nezapisují",
+    "Návod: kapitola 6 – napojení banky krok za krokem"
   ]
 }

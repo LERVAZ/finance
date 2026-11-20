@@ -224,3 +224,13 @@ textarea.struktura { width: 100%; font: 12px/1.4 'IBM Plex Mono', monospace; bac
 .navod img { display: block; max-width: min(100%, 360px); height: auto; border: 1px solid var(--line); border-radius: 12px; margin: 10px 0; }
 .navod li { margin: 4px 0; } .navod code { font-family: 'IBM Plex Mono', monospace; font-size: .92em; }
 .navod p { margin: 8px 0; } .navod ul, .navod ol { margin: 6px 0; padding-left: 22px; }
+
+/* Napojení na banku */
+a.btn, a.btn2 { display: inline-flex; align-items: center; text-decoration: none; font-size: 14px; font-weight: 500; border-radius: 8px; padding: 6px 12px; min-height: 36px; }
+a.btn { color: #fff; background: var(--accent); }
+a.btn:hover { background: var(--accent-h); }
+.banka-volby { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; }
+.banka-volby select { width: auto; flex: 1 1 150px; max-width: 250px; min-height: 36px; padding: 4px 8px; font-size: 13px; }
+.banka-volby button { min-height: 36px; padding: 6px 14px; }
+.banka-tx .n, .banka-ucet .n { min-width: 0; }
+.banka-ucet select { max-width: 48%; min-height: 36px; font-size: 13px; }

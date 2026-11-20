@@ -83,7 +83,7 @@ export function ukazkovaData(dnes) {
   const kDatu = iso(...rozloz(pridejMesice(dnes.slice(0, 8) + '01', -1)).slice(0, 2), 28);
   return {
     config: { schema_version: VERZE_SCHEMATU, vyplata_den: VD, vyplata_castka: 38500, ucet_vyplaty: 'a1', ucet_sporici: 'a2', dokonceno: true,
-      moduly: ['ucty', 'utraty', 'trvale', 'rocni', 'zdroje', 'investice', 'dluhopis', 'hypoteka', 'stavebko', 'pojisteni', 'majetek', 'dane', 'archiv'],
+      moduly: ['ucty', 'utraty', 'trvale', 'rocni', 'zdroje', 'investice', 'dluhopis', 'hypoteka', 'stavebko', 'pojisteni', 'majetek', 'dane', 'archiv', 'banka'],
       dane_penzijni_rocne: 18000 },
     data: {
       _config: [], ucty, stavy, trvale_platby, pohyby, investice, investice_historie, historie,
@@ -108,6 +108,13 @@ export function ukazkovaData(dnes) {
         vklad_mesicne: 3000, poplatky_rocne: 600, urok_pa: 1, aktivni: true }],
       pojisteni: [{ id: 'n1', nazev: 'Životní pojištění', pojistovna: 'Pojišťovna Omega', mesicni_platba: 1200, investicni_cast: 700, odkupne: 64000, k_datu: kDatu, od: '2018-03-01', danovy_odpocet: true, aktivni: true }],
       majetek: [{ id: 'm1', nazev: 'Byt', druh: 'nemovitost', hodnota: 5600000, k_datu: kDatu, aktivni: true }, { id: 'm2', nazev: 'Auto', druh: 'auto', hodnota: 240000, k_datu: kDatu, aktivni: true }],
+      banka_ucty: [{ id: 'uA1', relace: 'r1', banka: 'Banka Alfa', iban: 'CZ00 0100 0000 0000 1234 5678', nazev: 'Běžný účet', mena: 'CZK', ucet_id: 'a1',
+        zustatek: 6450, k_datu: dnes, souhlas_do: pridejMesice(dnes, 5), stazeno: dnes + ' 06:00', chyba: '' }],
+      banka_pohyby: [
+        { id: 'uA1:1', ucet_uid: 'uA1', datum: pridejDny(dnes, -2), castka: -1290, mena: 'CZK', protistrana: 'Lékárna Sigma', protiucet: '', popis: 'Platba kartou', stav: '' },
+        { id: 'uA1:2', ucet_uid: 'uA1', datum: pridejDny(dnes, -1), castka: -486, mena: 'CZK', protistrana: 'Potraviny Gama', protiucet: '', popis: 'Platba kartou', stav: '' },
+        { id: 'uA1:3', ucet_uid: 'uA1', datum: pridejDny(dnes, -1), castka: 1200, mena: 'CZK', protistrana: 'Jan Novák', protiucet: 'CZ00 0300 0000 0000 0000 1111', popis: 'vrácení za lístky', stav: '' }
+      ],
       archiv: [
         { id: 'x1', projekt: 'Rekonstrukce bytu', skupina: 'Koupelna', polozka: 'Obklady a dlažba', datum: '2025-03-10', castka: 48000, je_naklad: true, poradi: 1 },
         { id: 'x2', projekt: 'Rekonstrukce bytu', skupina: 'Koupelna', polozka: 'Sanita', datum: '2025-03-20', castka: 36500, je_naklad: true, poradi: 2 },
