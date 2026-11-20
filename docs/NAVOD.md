@@ -101,79 +101,11 @@ Tvoje data zůstávají v tabulce na tvém Disku. Na novém telefonu se jen znov
 
 ## 6. Napojení banky
 
-Napojení je **volitelné**. Aplikace pak sama stahuje zůstatky a platby z banky (4× denně) a ty platby jen potvrdíš. Bez napojení se vše zapisuje ručně.
+Aplikace se k bance nepřipojuje. Bezplatné automatické stahování plateb české banky soukromým osobám neumožňují, proto se platby a zůstatky zapisují ručně (Zápis → Platby a Zápis → Stavy).
 
-**Co jde napojit:** jen platební účty v bance (běžný, obvykle i spořicí). Stavební spoření, hypotéka, fondy, penzijko a pojištění se takhle stáhnout nedají a zůstávají ruční. V **Nastavení → Co jde napojit** si ověříš své banky.
+Banky a produkty si můžeš rychle založit z jejich názvů v **Nastavení → Kde máš peníze?**.
 
-**Jak to funguje:** napojení zajišťuje služba **Enable Banking** (bezplatný režim pro vlastní účty). Každý si u ní zakládá **vlastní** přístup a vlastní klíč. Stahování obstarává malý skript přímo **v tvé tabulce** pod tvým účtem Google, takže bankovní data nejdou přes žádný cizí server. Platby ze skriptu se objeví v aplikaci v **Zápis → Z banky** a do útrat se dostanou až po tvém potvrzení.
-
-> Nastavení zabere asi 20 minut a dělá se jednou. Postupuj krok po kroku.
-
-### 6.1 Zapni modul
-
-V aplikaci otevři **Nastavení → Moduly**, zaškrtni **Napojení na banku** a ulož. Aplikace se zeptá, jestli může do tabulky přidat listy `banka_ucty` a `banka_pohyby`, a potvrdíš. Předtím sama udělá zálohu tabulky.
-
-### 6.2 Vlož skript do tabulky
-
-1. V aplikaci otevři **Zápis → Z banky** a klikni na **Zkopírovat kód skriptu**.
-2. Klikni na **Otevřít tabulku**. V tabulce nahoře vyber **Rozšíření → Apps Script**.
-3. V editoru smaž všechno v souboru `Kód.gs` (`Code.gs`), vlož zkopírovaný kód (Ctrl+V) a klikni na ikonu **Uložit** (disketa).
-
-### 6.3 Nasaď skript jako webovou aplikaci
-
-Banka po přihlášení potřebuje adresu, kam tě vrátí. Tou bude tvůj skript.
-
-1. V editoru Apps Script vpravo nahoře klikni na **Nasadit → Nové nasazení**.
-2. U **Vyberte typ** (ozubené kolečko) zvol **Webová aplikace**.
-3. **Spustit jako:** *Já*. **Kdo má přístup:** *Jen já*. Klikni na **Nasadit**.
-4. Google chce povolení: **Autorizovat přístup** → vyber svůj účet → u „Google tuto aplikaci neověřil“ klikni na **Rozšířená nastavení → Přejít na … (nebezpečné)** → **Povolit**. (Je to tvůj vlastní skript.)
-5. Zkopíruj **Adresu URL webové aplikace** (končí `/exec`).
-6. V aplikaci Finance v **Zápis → Z banky** ji vlož do pole **Adresa skriptu** a klikni na **Uložit adresu**.
-
-### 6.4 Zaregistruj se u Enable Banking
-
-1. Otevři **https://enablebanking.com** a přihlas se (**Sign in**, přijde ti odkaz e-mailem).
-2. V ovládacím panelu otevři **Applications** a zaregistruj novou aplikaci:
-   - prostředí (**environment**): **Production**,
-   - název: třeba *Finance*,
-   - **Allowed redirect URLs:** adresa skriptu z kroku 6.3 (ta s `/exec` na konci),
-   - nech si vygenerovat klíč. Prohlížeč stáhne soubor **.pem** – to je tvůj soukromý klíč. **Nikomu ho neposílej** a nikam jinam nenahrávej.
-3. Poznamenej si **ID aplikace** (Application ID).
-4. U aplikace klikni na **Activate by linking accounts** a propoj svou banku (přihlásíš se do internetového bankovnictví). Tím se aplikace zdarma aktivuje pro tvoje vlastní účty.
-
-Přesné názvy tlačítek se u Enable Banking můžou trochu lišit.
-
-### 6.5 Vlož ID a klíč do skriptu
-
-1. V editoru Apps Script vlevo klikni na **Nastavení projektu** (ozubené kolečko).
-2. Dole u **Vlastnosti skriptu** klikni na **Přidat vlastnost skriptu** a přidej dvě:
-   - `EB_APP_ID` = ID aplikace z Enable Banking,
-   - `EB_KLIC` = celý obsah souboru .pem (otevři ho v Poznámkovém bloku, Ctrl+A, Ctrl+C a vlož).
-3. Klikni na **Uložit vlastnosti skriptu**.
-
-### 6.6 Zkontroluj a připoj banku
-
-1. Obnov stránku tabulky (F5). Nahoře se objeví menu **Banka**. Klikni na **Banka → Zkontrolovat nastavení** (poprvé znovu povolíš přístup). Má napsat „Nastavení je v pořádku“.
-2. V aplikaci v **Zápis → Z banky** klikni na **Připojit banku**, vyber svou banku a přihlas se v ní. Na konci uvidíš **„Banka je připojená“**.
-3. V tabulce klikni na **Banka → Zapnout automatické stahování (4× denně)**.
-4. V aplikaci v **Zápis → Z banky** u každého bankovního účtu vyber, ke kterému tvému účtu patří. Od té doby se jeho zůstatek zapisuje sám.
-
-### 6.7 Potvrzování plateb
-
-Na **Přehledu** se ukáže karta **Z banky**, když čekají nové platby. V **Zápis → Z banky** má každá platba návrh:
-
-- **Výdaj / Příjem** – zapíše se do útrat, u výdaje vyber kategorii. Aplikace si pamatuje, jak jsi dřív zařadil platby stejnému obchodu.
-- **Už zapsáno – spárovat** – platbu jsi už zapsal ručně (stejná částka, datum ± 4 dny). Nezapíše se podruhé, jen se propojí.
-- **Nezapisovat – trvalá platba** – trvalé platby se počítají z **Trvalých plateb**, zapsání by je odečetlo dvakrát.
-- **Nezapisovat – převod mezi mými účty** – peníze jen přešly z jednoho tvého účtu na druhý.
-- **Převod na spořicí** – převod z běžného na tvůj spořicí účet (není útrata).
-
-Když návrh sedí, klikni na **Potvrdit vše**. Jinak ho u platby změň a potvrď ji tlačítkem **OK**.
-
-### 6.8 Obnovení souhlasu a vypnutí
-
-- Banka dává souhlas zhruba na **180 dní**. 14 dní předem aplikace upozorní. Klikni na **Obnovit souhlas banky** a přihlas se v bance znovu.
-- **Vypnutí:** v tabulce **Banka → Vypnout automatické stahování**. Úplné zrušení: v ovládacím panelu Enable Banking aplikaci smaž a ve skriptu smaž vlastnost `EB_KLIC`. Už stažená data v tabulce zůstanou.
+Kdo měl verzi 1.3.0 a zapnul v ní modul Napojení na banku, má v tabulce prázdné listy `banka_ucty` a `banka_pohyby`. Aplikace si jich nevšímá. Můžeš je smazat (v tabulce pravým tlačítkem na záložku listu → Smazat).
 
 ## 7. Aktualizace a zálohy
 
@@ -188,8 +120,4 @@ Když návrh sedí, klikni na **Potvrdit vše**. Jinak ho u platby změň a potv
 - **„Přihlášení vypršelo“** – přihlášení platí asi hodinu. Klikni na **Přihlásit přes Google**.
 - **Čísla nesedí** – zkontroluj v **Útraty**, jestli je zapsaná výplata a jestli převody na spořicí nejsou zapsané jako výdaje. Pozor: co zapíšeš v jiné aplikaci nebo jinde, sem se samo nedostane.
 - **Nejde se přihlásit v prohlížeči s blokováním** – aplikace se přihlašuje přepnutím stránky na Google, takže blokování vyskakovacích oken ani cookies třetích stran nevadí. Když přesto nejde, zkus jiný prohlížeč a napiš provozovateli.
-- **Banka: „Klíč je ve formátu RSA PRIVATE KEY“** – skript potřebuje klíč ve formátu „PRIVATE KEY“. Převeď ho příkazem `openssl pkcs8 -topk8 -nocrypt -in klic.pem -out klic-novy.pem` (OpenSSL je součástí Git pro Windows) a do `EB_KLIC` vlož obsah nového souboru.
-- **Banka: po návratu z banky Google píše, že soubor nelze otevřít** – v prohlížeči jsi přihlášený víc účty Google. Otevři **Připojit banku** v anonymním okně, přihlas se jen svým účtem a zkus to znovu.
-- **Banka: „limit stahování“** – banka povoluje stahování bez tebe jen pár krát denně. Skript počká 6 hodin a zkusí to sám.
-- **Banka: platby se nestahují** – v tabulce zkus **Banka → Stáhnout teď**. Napíše, co je špatně (vypršený souhlas, chybějící klíč…).
 - **Do tabulky můžeš nahlížet i psát ručně** (Nastavení → Data a účet Google → otevřít v Google tabulkách). Jen nepřejmenovávej listy a neměň první řádek s názvy sloupců.

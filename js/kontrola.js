@@ -1,4 +1,4 @@
-/* Obrazovka „Kde máš peníze?“: volný text → co jde napojit → založení účtů a produktů. Používá ji průvodce i Nastavení. */
+/* Obrazovka „Kde máš peníze?“: volný text → rozpoznané banky a produkty → založení účtů a produktů. Používá ji průvodce i Nastavení. */
 import { html } from './html.js';
 import { zkontroluj, potvrd, PRODUKT_NAZEV } from './vypocty/katalog.js';
 import { MODULY, tabulkyProModuly } from './moduly/registr.js';
@@ -32,7 +32,6 @@ function existuje(store, r) {
 
 export function renderKontroly(store, kde) {
   const S = kontrolaStav;
-  const K = katalog;
   return html`<form class="card c-blue" data-akce="kontrola.zkontroluj" autocomplete="off">
     <h2>Kde máš peníze?</h2>
     <p class="muted small">Napiš banky a produkty tak, jak jim říkáš – oddělené čárkou. Třeba „Spořitelna, Raiffka spořicí, J&amp;T fondy, NN životko, stavebko, hypotéka“.</p>
@@ -43,13 +42,10 @@ export function renderKontroly(store, kde) {
     <h2>Výsledek</h2>
     <div class="kvysledky">${S.vysledky.map((r, i) => {
       const inst = r.jistota === 'jiste' ? r.instituce : null;
-      const n = K.napojeni[r.napojeni];
       const uz = existuje(store, r);
       return html`<div class="kvys">
-        <span class="kznak" aria-hidden="true">${n.znak}</span>
         <div class="ktelo">
           <div><b>${inst ? inst.nazev : r.nazevVstupu ? r.vstup : PRODUKT_NAZEV[r.produkt]}</b> <span class="muted small">· ${PRODUKT_NAZEV[r.produkt]}</span>${inst && inst.nazev.toLowerCase() !== r.vstup.toLowerCase() ? html` <span class="muted small">(„${r.vstup}“)</span>` : ''}</div>
-          <div class="small">${n.popis}${r.overenoZive ? ' · ověřeno živě' : ''}</div>
           ${r.vysvetleni ? html`<div class="note">${r.vysvetleni}</div>` : ''}
           ${r.jistota === 'nejiste' ? html`<div class="kotazka">Myslíš <b>${r.instituce.nazev}</b>?
             <button type="button" class="btn2 slim" data-akce="kontrola.potvrd" data-i="${i}" data-ano="1">Ano</button>
@@ -58,11 +54,7 @@ export function renderKontroly(store, kde) {
             : html`<label class="check"><input type="checkbox" name="z_${i}" checked> Založit (${nazevModulu(r.modul)})</label>`) : ''}
         </div></div>`;
     })}</div>
-    <div class="vysvetleni small">
-      <b>Proč něco nejde automaticky?</b> Přes bankovní rozhraní (PSD2) se dají stahovat jen <b>platební účty</b> – běžné a obvykle i spořicí.
-      Stavební spoření, hypotéka, fondy, penzijko, pojištění a dluhopisy se tímto způsobem stáhnout nedají, ty se zadávají ručně.
-      Stav katalogu: ${K.stav_k}, napojení přes Enable Banking se ověří živě, až si ho nastavíš.
-    </div>
+    <div class="vysvetleni small">Čísla (zůstatky, hodnoty) doplníš v dalším kroku nebo později v <b>Zápis → Stavy</b>. Všechno se zadává ručně.</div>
     <div class="formbar">${kde === 'pruvodce' ? html`<button type="button" class="btn2" data-akce="kontrola.preskocit">Přeskočit</button>` : html`<button type="button" class="btn2" data-akce="kontrola.zavrit">Zavřít</button>`}
       <button type="submit">Založit vybrané</button></div>
   </form>` : (kde === 'pruvodce' ? html`<div class="formbar"><span></span><button type="button" class="btn2" data-akce="kontrola.preskocit">Přeskočit</button></div>` : html`<div class="center"><button type="button" class="btn2" data-akce="kontrola.zavrit">Zavřít</button></div>`)}`;

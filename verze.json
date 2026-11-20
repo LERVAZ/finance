@@ -1,9 +1,8 @@
 {
-  "verze": "1.3.0",
+  "verze": "1.3.1",
   "datum": "2026-11-20",
   "novinky": [
-    "Napojení na banku (Enable Banking): skript do vlastní tabulky stahuje zůstatky a platby 4× denně",
-    "Zápis → Z banky: platby z banky jen potvrdíš, ruční zápisy se spárují, trvalé platby a převody mezi vlastními účty se nezapisují",
-    "Návod: kapitola 6 – napojení banky krok za krokem"
+    "Napojení na banku odstraněno – Enable Banking v bezplatném režimu české banky nepodporuje",
+    "Obrazovka „Co jde napojit“ se jmenuje „Kde máš peníze?“ a jen zakládá účty a produkty z názvů"
   ]
 }

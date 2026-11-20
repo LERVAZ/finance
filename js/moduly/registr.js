@@ -12,12 +12,8 @@ import pojisteni from './pojisteni.js';
 import majetek from './majetek.js';
 import dane from './dane.js';
 import archiv from './archiv.js';
-import banka from './banka.js';
 
-export const MODULY = [ucty, utraty, trvale, rocni, zdroje, investice, dluhopis, hypoteka, stavebko, pojisteni, majetek, dane, archiv, banka];
-
-/** Moduly, které přijdou v dalších fázích (v průvodci se ukážou jako „připravujeme“). */
-export const PRIPRAVUJEME = [];
+export const MODULY = [ucty, utraty, trvale, rocni, zdroje, investice, dluhopis, hypoteka, stavebko, pojisteni, majetek, dane, archiv];
 
 export const modul = (id) => MODULY.find((m) => m.id === id);
 export const vychoziModuly = () => MODULY.filter((m) => m.vychozi).map((m) => m.id);

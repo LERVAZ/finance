@@ -1,6 +1,6 @@
 /* Service worker: aplikace se otevře i bez signálu. Data z tabulky se nikdy neukládají do mezipaměti.
    Název mezipaměti nastavuje tools/vydat.js podle verze. */
-const CACHE = 'finance2-1.3.0';
+const CACHE = 'finance2-1.3.1';
 const SOUBORY = ['./', 'index.html', 'css/base.css', 'css/app.css', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png',
   'js/app.js', 'js/verze.js', 'js/napoveda.js', 'docs/NAVOD.md', 'js/auth.js', 'js/config.js', 'js/html.js', 'js/texty.js', 'js/schema.js', 'js/ukazka.js', 'js/pruvodce.js', 'js/nastaveni.js',
   'js/editor.js', 'js/zalozky.js', 'js/grafy.js', 'js/kontrola.js', 'js/doplnky.js', 'js/kontext.js', 'js/rozlozeni.js', 'js/banky.js', 'js/vypocty/katalog.js', 'data/katalog.json',
@@ -8,7 +8,7 @@ const SOUBORY = ['./', 'index.html', 'css/base.css', 'css/app.css', 'manifest.we
   'js/uloziste/prevod.js', 'js/uloziste/pamet.js', 'js/uloziste/sheets.js',
   'js/moduly/registr.js', 'js/moduly/ucty.js', 'js/moduly/utraty.js', 'js/moduly/trvale.js', 'js/moduly/rocni.js', 'js/moduly/zdroje.js',
   'js/moduly/investice.js', 'js/moduly/dluhopis.js', 'js/moduly/hypoteka.js', 'js/moduly/stavebko.js', 'js/moduly/pojisteni.js',
-  'js/moduly/majetek.js', 'js/moduly/dane.js', 'js/moduly/archiv.js', 'js/moduly/banka.js', 'js/vypocty/banka.js'];
+  'js/moduly/majetek.js', 'js/moduly/dane.js', 'js/moduly/archiv.js'];
 
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SOUBORY))); self.skipWaiting(); });
 self.addEventListener('activate', (e) => {

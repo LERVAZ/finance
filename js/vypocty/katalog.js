@@ -1,5 +1,5 @@
-/* Kontrola „co jde napojit“: z volného textu („Spořitelna, Raiffka, J&T fondy, NN životko, stavebko“)
-   najde instituce v katalogu, pozná produkt a řekne, jestli jde napojit automaticky, nebo jen ručně. */
+/* „Kde máš peníze?“: z volného textu („Spořitelna, Raiffka, J&T fondy, NN životko, stavebko“)
+   najde instituce v katalogu a pozná produkt, aby z nich šly založit účty a produkty. */
 
 /** Bez diakritiky, malá písmena, & pryč (J&T → jt), jen písmena, čísla a mezery. */
 export function normalizuj(s) {
@@ -78,12 +78,6 @@ export function najdi(katalog, q, typ = null) {
 
 export const JISTE = 0.85, NEJISTE = 0.65;
 
-/** Výsledné napojení: přes bankovní rozhraní (PSD2) jdou jen platební účty (běžné a spořicí). */
-export function napojeniPro(inst, produkt) {
-  if (produkt === 'bezny' || produkt === 'sporici') return inst ? (inst.typ === 'banka' ? inst.napojeni : 'rucne') : 'overit';
-  return 'rucne';
-}
-
 /** Rozbor jedné položky textu. */
 export function rozeberPolozku(katalog, vstup) {
   const norm = normalizuj(vstup);
@@ -106,19 +100,14 @@ export function rozeberPolozku(katalog, vstup) {
   return finalizuj({ vstup, nazevVstupu: zbytek, instituce: shoda || null, skore, jistota, produkt });
 }
 
-/** Doplní modul, napojení a vysvětlení (volá se i po potvrzení nejisté shody). */
+/** Doplní modul a vysvětlení (volá se i po potvrzení nejisté shody). */
 export function finalizuj(r) {
-  const inst = r.jistota === 'jiste' ? r.instituce : null;
-  const napojeni = r.zive || napojeniPro(inst, r.produkt);
-  let vysvetleni = inst && inst.poznamka ? inst.poznamka : '';
-  if (inst && inst.typ === 'banka' && !(r.produkt === 'bezny' || r.produkt === 'sporici'))
-    vysvetleni = 'Přes bankovní rozhraní (PSD2) jdou jen běžné a spořicí účty – ' + PRODUKT_NAZEV[r.produkt].toLowerCase() + ' se zadává ručně.';
-  else if (inst && inst.typ !== 'banka') vysvetleni = vysvetleni || 'Není platební účet, přes bankovní rozhraní se stáhnout nedá.';
-  if (!inst && r.jistota === 'nezname') {
+  let vysvetleni = '';
+  if (r.jistota === 'nezname') {
     vysvetleni = !r.nazevVstupu ? 'Chybí název banky nebo instituce – doplníš ho později v Účtech.'
-      : 'V katalogu ji neznám.' + (napojeni === 'overit' ? ' Zkusí se ověřit živě po nastavení Enable Banking, do té doby ručně.' : '');
+      : 'V katalogu ji neznám – založí se pod názvem, jak jsi ho napsal.';
   }
-  return { ...r, modul: PRODUKT_MODUL[r.produkt], napojeni, vysvetleni };
+  return { ...r, modul: PRODUKT_MODUL[r.produkt], vysvetleni };
 }
 
 export function zkontroluj(katalog, text) {
@@ -130,18 +119,3 @@ export function potvrd(r, ano) {
   return finalizuj(ano ? { ...r, jistota: 'jiste' } : { ...r, jistota: 'nezname', instituce: null });
 }
 
-/**
- * Živé ověření: seznam bank z Enable Banking (GET /aspsps?country=CZ → názvy) přebije katalog
- * u běžných a spořicích účtů bank.
- */
-export function prebijZive(vysledky, nazvyAspsp) {
-  const zive = nazvyAspsp.map(normalizuj);
-  return vysledky.map((r) => {
-    if (!(r.produkt === 'bezny' || r.produkt === 'sporici')) return r;
-    const inst = r.jistota === 'jiste' ? r.instituce : null;
-    const kandidati = inst ? jmena(inst) : [normalizuj(r.nazevVstupu || r.vstup)];
-    const nalezeno = zive.some((z) => kandidati.some((k) => k && (z === k || podobnost(k, z) >= JISTE || z.includes(k))));
-    if (inst && inst.napojeni === 'vlastni_api' && !nalezeno) return r;
-    return finalizuj({ ...r, zive: nalezeno ? 'enable_banking' : 'rucne', overenoZive: true });
-  });
-}

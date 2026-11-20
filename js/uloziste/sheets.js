@@ -229,38 +229,6 @@ export class SheetsUloziste {
     return novy;
   }
 
-  /** Úprava víc řádků najednou: [{ id, zmeny }]. Zapíše jen změněné buňky (ostatní sloupce mohl mezitím změnit skript),
-      sloupec id přečte jednou a vše pošle jedním voláním. */
-  async upravVice(tab, polozky) {
-    if (!polozky.length) return [];
-    const hl = this.hlavicky[tab];
-    if (!hl) throw new Error('V tabulce chybí list „' + tab + '“.');
-    const col = pismeno(hl.indexOf('id'));
-    const j = await volej(this.token, SHEETS + '/' + this.id + '/values/' + encodeURIComponent(q(tab) + '!' + col + ':' + col) + '?valueRenderOption=UNFORMATTED_VALUE');
-    const v = j.values || [];
-    const radky = new Map();
-    for (let r = 1; r < v.length; r++) if (v[r] && v[r][0] !== undefined && v[r][0] !== '') {
-      const id = String(v[r][0]);
-      if (radky.has(id)) throw new Error('V listu „' + tab + '“ je víc řádků se stejným id (' + id + '). Oprav to v tabulce.');
-      radky.set(id, r + 1);
-    }
-    const data = [], out = [];
-    for (const { id, zmeny } of polozky) {
-      const i = this.data[tab].findIndex((x) => x.id === id);
-      const radek = radky.get(String(id));
-      if (i < 0 || !radek) throw new Error('Záznam v listu „' + tab + '“ nebyl nalezen (možná byl smazán ručně). Načti data znovu.');
-      for (const [k, h] of Object.entries(zmeny)) {
-        const c = hl.indexOf(k);
-        if (c < 0 || k === 'id') continue;
-        data.push({ range: q(tab) + '!' + pismeno(c) + radek, values: [objektNaRadek(tab, [k], { [k]: h })] });
-      }
-      this.data[tab][i] = { ...this.data[tab][i], ...zmeny, id };
-      out.push(this.data[tab][i]);
-    }
-    if (data.length) await volej(this.token, SHEETS + '/' + this.id + '/values:batchUpdate', { method: 'POST', body: { valueInputOption: 'RAW', data } });
-    return out;
-  }
-
   async smaz(tab, id) {
     const i = this.data[tab].findIndex((x) => x.id === id);
     if (i < 0) throw new Error('Záznam už neexistuje.');

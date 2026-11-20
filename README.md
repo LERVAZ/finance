@@ -44,7 +44,7 @@ node tools/snimek.js "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.e
 
 ## Moduly
 
-Účty, Útraty za měsíc, Trvalé platby, Roční platby, Roční zdroje, Investice a fondy, Pevný výnos / dluhopis, Hypotéka, Stavební spoření, Životní pojištění, Majetek, Daňové odpočty, Archiv a projekty. Napojení na banku přijde ve fázi 5.
+Účty, Útraty za měsíc, Trvalé platby, Roční platby, Roční zdroje, Investice a fondy, Pevný výnos / dluhopis, Hypotéka, Stavební spoření, Životní pojištění, Majetek, Daňové odpočty, Archiv a projekty. Platby a zůstatky se zapisují ručně, napojení na banku aplikace nemá.
 
 ## Jak přidat modul
 

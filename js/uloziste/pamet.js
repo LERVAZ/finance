@@ -29,11 +29,6 @@ export class PametUloziste {
     Object.assign(r, zmeny, { id });
     return r;
   }
-  async upravVice(tab, polozky) {
-    const out = [];
-    for (const { id, zmeny } of polozky) out.push(await this.uprav(tab, id, zmeny));
-    return out;
-  }
   async smaz(tab, id) {
     const i = (this.data[tab] || []).findIndex((x) => x.id === id);
     if (i < 0) throw new Error('Záznam už neexistuje.');

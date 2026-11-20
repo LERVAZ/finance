@@ -60,11 +60,10 @@ details.sec .rowbtn { padding-left: 22px; }
 .card form.form { margin-top: 6px; align-items: end; }
 @media (max-width: 480px) { .scen { grid-template-columns: minmax(0, 1.1fr) repeat(2, minmax(0, 1fr)); } .mrow .d.r { width: 60px; } }
 
-/* fáze 3: kontrola „co jde napojit“ */
+/* „Kde máš peníze?“ – banky a produkty z textu */
 .kvysledky { display: flex; flex-direction: column; }
 .kvys { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
 .kvys:last-child { border-bottom: 0; }
-.kznak { font-size: 22px; line-height: 1.2; width: 28px; flex: none; text-align: center; }
 .ktelo { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1; }
 .kotazka { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 14px; padding: 6px 10px; border-radius: 8px; background: var(--amber-soft); }
 .vysvetleni { background: var(--accent-soft); border-radius: 10px; padding: 12px 14px; line-height: 1.5; }
@@ -224,13 +223,3 @@ textarea.struktura { width: 100%; font: 12px/1.4 'IBM Plex Mono', monospace; bac
 .navod img { display: block; max-width: min(100%, 360px); height: auto; border: 1px solid var(--line); border-radius: 12px; margin: 10px 0; }
 .navod li { margin: 4px 0; } .navod code { font-family: 'IBM Plex Mono', monospace; font-size: .92em; }
 .navod p { margin: 8px 0; } .navod ul, .navod ol { margin: 6px 0; padding-left: 22px; }
-
-/* Napojení na banku */
-a.btn, a.btn2 { display: inline-flex; align-items: center; text-decoration: none; font-size: 14px; font-weight: 500; border-radius: 8px; padding: 6px 12px; min-height: 36px; }
-a.btn { color: #fff; background: var(--accent); }
-a.btn:hover { background: var(--accent-h); }
-.banka-volby { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; }
-.banka-volby select { width: auto; flex: 1 1 150px; max-width: 250px; min-height: 36px; padding: 4px 8px; font-size: 13px; }
-.banka-volby button { min-height: 36px; padding: 6px 14px; }
-.banka-tx .n, .banka-ucet .n { min-width: 0; }
-.banka-ucet select { max-width: 48%; min-height: 36px; font-size: 13px; }

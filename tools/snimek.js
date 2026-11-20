@@ -16,8 +16,6 @@ const SCENARE = [
   { jmeno: 'navod-zapis', url: '/?ukazka#zapis', w: 390, h: 760, kroky: ["document.querySelectorAll('.alert').forEach(e=>e.remove()); document.getElementById('hSub').textContent=''"] },
   { jmeno: 'navod-zamek', url: '/?ukazka#nastaveni', w: 390, h: 760, kroky: ["document.querySelectorAll('.alert').forEach(e=>e.remove()); document.getElementById('hSub').textContent=''", "[...document.querySelectorAll('h2')].find(h=>h.textContent.includes('Vzhled')).scrollIntoView({block:'center'})"] },
   { jmeno: 'napoveda-mobil', url: '/?ukazka#nastaveni', w: 390, h: 1400, cekej: 1200, kroky: ["document.querySelector('[data-akce=\"nastaveni.napoveda\"]').click()"] },
-  { jmeno: 'banka-mobil', url: '/?ukazka#zapis', w: 390, h: 1500, kroky: ["document.querySelector('[data-hodnota=\"banka\"]').click()"] },
-  { jmeno: 'banka-desktop', url: '/?ukazka#zapis', w: 1280, h: 1100, kroky: ["document.querySelector('[data-hodnota=\"banka\"]').click()"] },
   { jmeno: 'uvod-mobil', url: '/', w: 390, h: 844 },
   { jmeno: 'prehled-mobil', url: '/?ukazka#prehled', w: 390, h: 1500 },
   { jmeno: 'ucty-mobil', url: '/?ukazka#ucty', w: 390, h: 1000, kroky: ["document.querySelector('[data-akce=\"ucty.rozbal\"]').click()"] },

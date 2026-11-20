@@ -2,7 +2,7 @@
 import { html, karta, ikona, raw } from './html.js';
 import { nactiNavod } from './napoveda.js';
 import { cislo, precti } from './texty.js';
-import { MODULY, PRIPRAVUJEME, tabulkyProModuly } from './moduly/registr.js';
+import { MODULY, tabulkyProModuly } from './moduly/registr.js';
 import { renderKontroly } from './kontrola.js';
 import { doplnky } from './doplnky.js';
 import * as auth from './auth.js';
@@ -27,8 +27,7 @@ export function renderNastaveni(ctx, app) {
     <h2>Moduly</h2>
     <p class="muted small">Vypnutý modul zmizí z aplikace. Jeho list v tabulce i data zůstanou – po zapnutí se vrátí.</p>
     <div class="tiles">${MODULY.map((m) => html`<label class="tile"><input type="checkbox" name="m_${m.id}" ${zapnute.includes(m.id) ? 'checked' : ''}>
-      <span class="tile-ikona">${ikona(m.ikona)}</span><span><b>${m.nazev}</b><span class="s">${m.popis}</span></span></label>`)}
-      ${PRIPRAVUJEME.map((m) => html`<div class="tile off" aria-disabled="true"><span class="tile-ikona">${ikona('plany')}</span><span><b>${m.nazev}</b><span class="st st-dopln">připravujeme</span></span></div>`)}</div>
+      <span class="tile-ikona">${ikona(m.ikona)}</span><span><b>${m.nazev}</b><span class="s">${m.popis}</span></span></label>`)}</div>
     <div class="formbar"><span></span><button type="submit">Uložit moduly</button></div>
   </form>
   ${ctx.zapnuto('utraty') || ucty.length ? html`<form class="card" data-akce="nastaveni.zaklad" autocomplete="off">
@@ -46,8 +45,8 @@ export function renderNastaveni(ctx, app) {
     <div class="hbtns"><button type="button" class="btn2" data-akce="import.otevrit">Importovat ze staré tabulky</button></div>`) : ''}
   ${karta('', 'Nápověda', html`<p class="muted small">Návod krok za krokem: instalace na plochu, přihlášení, zápis plateb, zámek, časté potíže.</p>
     <div class="hbtns"><button type="button" class="btn2" data-akce="nastaveni.napoveda">Otevřít návod</button></div>`)}
-  ${karta('', 'Co jde napojit', html`<p class="muted small">Napiš své banky a produkty a aplikace ti řekne, co půjde stahovat automaticky a co se zadává ručně. Z výsledku rovnou založí účty a produkty.</p>
-    <div class="hbtns"><button type="button" class="btn2" data-akce="nastaveni.kontrola">Zkontrolovat banky a produkty</button></div>`)}
+  ${karta('', 'Kde máš peníze?', html`<p class="muted small">Napiš své banky a produkty, jak jim říkáš, a aplikace z nich rovnou založí účty a produkty.</p>
+    <div class="hbtns"><button type="button" class="btn2" data-akce="nastaveni.kontrola">Založit z názvů bank a produktů</button></div>`)}
   <form class="card" data-akce="nastaveni.kategorie">
     <h2>Kategorie výdajů</h2>
     <div class="field"><label for="nKat">Jedna kategorie na řádek</label><textarea id="nKat" name="kategorie" rows="8">${ctx.kategorie().join('\n')}</textarea></div>

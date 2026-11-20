@@ -1,7 +1,7 @@
 /* Průvodce pro nového uživatele: úvod → přihlášení → výběr modulů (založí tabulku) → kde máš peníze → základní čísla → zámek. */
 import { html, ikona } from './html.js';
 import { precti, TYPY_UCTU, cislo } from './texty.js';
-import { MODULY, PRIPRAVUJEME, vychoziModuly, tabulkyProModuly } from './moduly/registr.js';
+import { MODULY, vychoziModuly, tabulkyProModuly } from './moduly/registr.js';
 import { SheetsUloziste } from './uloziste/sheets.js';
 import { NASTAVENI } from './config.js';
 import { renderKontroly } from './kontrola.js';
@@ -27,7 +27,7 @@ function uvod() {
       <li><b>Data máš jen ty</b> – ukládají se do Google tabulky na tvém Disku. Aplikace nemá žádný vlastní server ani databázi.</li>
       <li><b>Vidí jen svou tabulku.</b> Oprávnění Googlu dovolí aplikaci pracovat jen se soubory, které sama založí – ostatní soubory na Disku nevidí.</li>
       <li><b>Vybereš si, co chceš sledovat</b> – účty, útraty, trvalé platby, později investice, hypotéku a další.</li>
-      <li><b>Co zatím neumí:</b> napojení na banku přijde v další verzi. Zatím se vše zadává ručně.</li>
+      <li><b>Platby a zůstatky zapisuješ sám</b> – aplikace se k bance nepřipojuje.</li>
     </ul>
     <button type="button" class="wide" data-akce="pruvodce.prihlasit">Přihlásit přes Google</button>
     <p class="center small"><a href="https://github.com/LERVAZ/finance/blob/main/docs/NAVOD.md" target="_blank" rel="noopener">Návod – jak začít</a></p>
@@ -40,9 +40,7 @@ function moduly() {
     <h2>Co chceš sledovat?</h2>
     <p class="muted small">Vybrat můžeš i později v Nastavení. Pro každý zvolený modul vznikne v tabulce list.</p>
     <div class="tiles">${MODULY.map((m) => html`<label class="tile"><input type="checkbox" name="m_${m.id}" ${vybrane.includes(m.id) ? 'checked' : ''}>
-      <span class="tile-ikona">${ikona(m.ikona)}</span><span><b>${m.nazev}</b><span class="s">${m.popis}</span></span></label>`)}
-      ${PRIPRAVUJEME.map((m) => html`<div class="tile off" aria-disabled="true"><span class="tile-ikona">${ikona('plany')}</span>
-        <span><b>${m.nazev}</b><span class="s">${m.popis}</span><span class="st st-dopln">připravujeme</span></span></div>`)}</div>
+      <span class="tile-ikona">${ikona(m.ikona)}</span><span><b>${m.nazev}</b><span class="s">${m.popis}</span></span></label>`)}</div>
     <div class="formbar"><span class="muted small">Založí se tabulka „${NASTAVENI.nazevTabulky}“ na tvém Google Disku.</span><button type="submit">Založit tabulku a pokračovat</button></div>
   </form>`;
 }

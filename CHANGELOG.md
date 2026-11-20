@@ -1,5 +1,9 @@
 # Co je nového
 
+## 1.3.1 – 20. 11. 2026
+- Napojení na banku odstraněno – Enable Banking v bezplatném režimu české banky nepodporuje
+- Obrazovka „Co jde napojit“ se jmenuje „Kde máš peníze?“ a jen zakládá účty a produkty z názvů
+
 ## 1.3.0 – 20. 11. 2026
 - Napojení na banku (Enable Banking): skript do vlastní tabulky stahuje zůstatky a platby 4× denně
 - Zápis → Z banky: platby z banky jen potvrdíš, ruční zápisy se spárují, trvalé platby a převody mezi vlastními účty se nezapisují
